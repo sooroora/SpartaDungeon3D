@@ -4,12 +4,19 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-// 옛날에 만든거
-// string으로 찾아야해서 불편함. 나중에 enum 같은걸로 바꿔야함!!
 public class SoundManager : MonoBehaviour
 {
     private static SoundManager instance;
+    public static SoundManager Instance
+    {
+        get => instance;
+        private set => instance = value;
+    }
     
+    // 리소스에 넣지 않는 방식으로 변경
+    [SerializeField] private AudioClipGroup[] sfxGroupAsset;
+    [SerializeField] private AudioClipGroup[] bgmGroupAsset;
+
     public float MasterVolume
     {
         get => _masterVolume;
@@ -33,12 +40,6 @@ public class SoundManager : MonoBehaviour
     private float _masterVolume = 1.0f;
 
 
-    public static SoundManager Instance
-    {
-        get => instance;
-        private set => instance = value;
-    }
-
     Dictionary<ESfxName, AudioClipGroup> SFXTable = new Dictionary<ESfxName, AudioClipGroup>();
     Dictionary<EBgmName, AudioClipGroup> BGMTable = new Dictionary<EBgmName, AudioClipGroup>();
 
@@ -54,7 +55,7 @@ public class SoundManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             instance = this;
 
-            bgmAudioSource  = gameObject.AddComponent<AudioSource>();
+            bgmAudioSource = gameObject.AddComponent<AudioSource>();
             sfxAudioSources = new List<AudioSource>();
 
             // 일단 풀에 10개 넣어
@@ -106,19 +107,6 @@ public class SoundManager : MonoBehaviour
         //Enum.GetValues<SoundName>().ToDictionary(part => part, part => null);
     }
 
-    private void Update()
-    {
-        //테스트
-        if (Input.GetKeyDown(KeyCode.Backspace))
-        {
-            PlaySfxRandom(ESfxName.Click, Random.Range(0.1f, 1f));
-        }
-
-        if (Input.GetKeyDown(KeyCode.Equals))
-        {
-            AllSfxStop();
-        }
-    }
 
     public void PlaySfxRandom(ESfxName sfxName, float volume = 1.0f)
     {
@@ -128,10 +116,20 @@ public class SoundManager : MonoBehaviour
             aClip = clip.GetRandomClip();
         }
 
-        PlaySfxOnce(aClip, volume);
+        PlaySfx(aClip, volume);
     }
     
-    
+    public void PlaySfxAtAudioSource(ESfxName sfxName, AudioSource aSource, float volume = 1.0f, int idx = 0)
+    {
+        AudioClip aClip = null;
+        if (SFXTable.TryGetValue(sfxName, out AudioClipGroup clip))
+        {
+            aClip = clip.GetClip(idx);
+        }
+
+        PlaySfx(aClip, volume, aSource);
+    }
+
     public void PlaySfxOnce(ESfxName sfxName, float volume = 1.0f, int idx = 0)
     {
         AudioClip aClip = null;
@@ -140,20 +138,20 @@ public class SoundManager : MonoBehaviour
             aClip = clip.GetClip(idx);
         }
 
-        PlaySfxOnce(aClip, volume);
+        PlaySfx(aClip, volume);
     }
 
-    void PlaySfxOnce(AudioClip aClip, float _volume = 1.0f)
+    void PlaySfx(AudioClip aClip, float _volume = 1.0f, bool loop = false, AudioSource _audioSource = null)
     {
         if (aClip != null)
         {
-            AudioSource audioSource = GetSFXAudioSource();
-            if(audioSource == null)
+            AudioSource audioSource = _audioSource == null ? GetSFXAudioSource() : _audioSource;
+            if (audioSource == null)
                 return;
-            
+
             audioSource.Stop();
             audioSource.volume = GetVolume(SfxVolume, _volume);
-            audioSource.clip   = aClip;
+            audioSource.clip = aClip;
             audioSource.Play();
         }
     }
@@ -169,9 +167,9 @@ public class SoundManager : MonoBehaviour
         if (aClip != null)
         {
             bgmAudioSource.Stop();
-            bgmAudioSource.volume = GetVolume(BgmVolume,_volume);
-            bgmAudioSource.loop   = _loop;
-            bgmAudioSource.clip   = aClip;
+            bgmAudioSource.volume = GetVolume(BgmVolume, _volume);
+            bgmAudioSource.loop = _loop;
+            bgmAudioSource.clip = aClip;
             bgmAudioSource.pitch = pitch;
             bgmAudioSource.Play();
         }
@@ -205,16 +203,15 @@ public class SoundManager : MonoBehaviour
     {
         AudioSource shortestSource     = null;
         float       shortestRemainTime = float.MaxValue;
-        
+
         foreach (AudioSource audioSource in sfxAudioSources)
         {
             if (audioSource.isPlaying == false)
             {
                 return audioSource;
             }
-            
+
             // 제일 짧게 남은거 끊고 재생하는 방식
-             
             float remainTime = audioSource.clip.length - audioSource.time;
             if (remainTime <= shortestRemainTime)
             {
@@ -224,12 +221,13 @@ public class SoundManager : MonoBehaviour
         }
 
         return shortestSource;
-        
+
         // 스킵하지 않고 audioSource 추가하는 버전
         // AudioSource newAudioSource = gameObject.AddComponent<AudioSource>();
         // sfxAudioSources.Add(newAudioSource);
         // return newAudioSource;
     }
+
 
     void SetBgmVolume()
     {
@@ -238,13 +236,11 @@ public class SoundManager : MonoBehaviour
 
     void SetSavedVolume()
     {
-        MasterVolume = PlayerPrefs.GetFloat("MasterVolume", 1.0f); 
+        MasterVolume = PlayerPrefs.GetFloat("MasterVolume", 1.0f);
         SfxVolume = PlayerPrefs.GetFloat("SfxVolume", 1.0f);
         BgmVolume = PlayerPrefs.GetFloat("BGMVolume", 1.0f);
-        
-        
     }
-    
+
     float GetVolume(float settingVolume, float customVolume)
     {
         return MasterVolume * settingVolume * customVolume;
@@ -252,20 +248,20 @@ public class SoundManager : MonoBehaviour
 
     public void SetMasterVolume(float volume)
     {
-        MasterVolume = Mathf.Clamp(volume,0,1.0f);
+        MasterVolume = Mathf.Clamp(volume, 0, 1.0f);
         PlayerPrefs.SetFloat("MasterVolume", MasterVolume);
         SetBgmVolume();
     }
 
     public void SetSfxVolume(float volume)
     {
-        SfxVolume = Mathf.Clamp(volume,0,1.0f);
+        SfxVolume = Mathf.Clamp(volume, 0, 1.0f);
         PlayerPrefs.SetFloat("SfxVolume", MasterVolume);
     }
 
     public void SetBgmVolume(float volume)
     {
-        BgmVolume = Mathf.Clamp(volume,0,1.0f);
+        BgmVolume = Mathf.Clamp(volume, 0, 1.0f);
         PlayerPrefs.SetFloat("BgmVolume", MasterVolume);
         SetBgmVolume();
     }
