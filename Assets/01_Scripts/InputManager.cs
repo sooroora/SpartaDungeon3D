@@ -32,23 +32,28 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    public void RegisterActions()
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    void RegisterActions()
     {
         playerInput = GetComponent<PlayerInput>();
-        
-        playerInput.actions["Move"].performed += OnMove;
+
         playerInput.actions["Move"].started += OnMove;
+        playerInput.actions["Move"].performed += OnMove;
         playerInput.actions["Move"].canceled += OnMove;
-        
-        playerInput.actions["Look"].performed += OnLook;
+
         playerInput.actions["Look"].started += OnLook;
+        playerInput.actions["Look"].performed += OnLook;
         playerInput.actions["Look"].canceled += OnLook;
     }
 
     public void SetPlayerController(PlayerController _playerController)
     {
         playerController = _playerController;
-        
+
     }
 
     public void SetCameraController(CameraController _cameraController)
@@ -60,7 +65,9 @@ public class InputManager : MonoBehaviour
     ////// Player
     public void OnMove(InputAction.CallbackContext context)
     {
+        Debug.Log("?");
 
+        playerController?.UpdateMoveInput(context.ReadValue<Vector2>());
 
     }
 
@@ -68,10 +75,16 @@ public class InputManager : MonoBehaviour
     ////// Camera
     public void OnLook(InputAction.CallbackContext context)
     {
-        if (cameraController == null) return;
-
+        //if (cameraController == null) return;
         Vector2 mouseDelta = context.ReadValue<Vector2>();
-        cameraController.RotateCamera(mouseDelta);
+        cameraController?.UpdateLookInput(mouseDelta);
+        
+        
+        // lateUpdate 때문에 forward가 늦게 구해질 수 있어서
+        // UpdateLookInput에서 반환하는 방식으로 바꿔바야할 것 같음
+        Vector3 forward = Quaternion.Euler(0, cameraController.ContainerY.localEulerAngles.y, 0)
+                          * Vector3.forward;
+        playerController?.UpdateForward(forward);
 
     }
 }

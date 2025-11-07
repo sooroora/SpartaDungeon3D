@@ -5,14 +5,16 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public PlayerController controller;
-
+    private PlayerController controller;
+    
     private void Awake()
     {
-        CharacterManager.Instance.Player = this;
         controller = GetComponent<PlayerController>();
-    
-        
+    }
+
+    private void Start()
+    {
+        CharacterManager.Instance.Player = this;
     }
     
     
