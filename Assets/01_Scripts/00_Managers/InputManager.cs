@@ -48,6 +48,10 @@ public class InputManager : MonoBehaviour
         playerInput.actions["Look"].started += OnLook;
         playerInput.actions["Look"].performed += OnLook;
         playerInput.actions["Look"].canceled += OnLook;
+        
+        playerInput.actions["Jump"].started += OnJump;
+        playerInput.actions["Jump"].performed += OnJump;
+        playerInput.actions["Jump"].canceled += OnJump;
     }
 
     public void SetPlayerController(PlayerController _playerController)
@@ -65,17 +69,22 @@ public class InputManager : MonoBehaviour
     ////// Player
     public void OnMove(InputAction.CallbackContext context)
     {
-        Debug.Log("?");
-
         playerController?.UpdateMoveInput(context.ReadValue<Vector2>());
-
+        
     }
-
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        Debug.Log("ASDASD");
+        if (context.phase == InputActionPhase.Started)
+        {
+            playerController?.OnJump();
+        }
+        
+    }
 
     ////// Camera
     public void OnLook(InputAction.CallbackContext context)
     {
-        //if (cameraController == null) return;
         Vector2 mouseDelta = context.ReadValue<Vector2>();
         cameraController?.UpdateLookInput(mouseDelta);
         
@@ -85,6 +94,7 @@ public class InputManager : MonoBehaviour
         Vector3 forward = Quaternion.Euler(0, cameraController.ContainerY.localEulerAngles.y, 0)
                           * Vector3.forward;
         playerController?.UpdateForward(forward);
-
     }
+
+
 }
