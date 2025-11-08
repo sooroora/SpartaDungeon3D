@@ -12,7 +12,8 @@ public class GameManager : MonoBehaviour
         get => instance;
         private set => instance = value;
     }
-    
+
+    public Player Player => player;
     [SerializeField] Player player;
     [SerializeField] PlayerController playerController;
     [SerializeField] CameraController cameraController;
@@ -23,11 +24,18 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
         }
-        else if(instance != this)
+        else if (instance != this)
         {
             Destroy(gameObject);
         }
-        
+
+    }
+
+
+    private void Start()
+    {
+        Init();
+
     }
 
     private void Init()
@@ -35,16 +43,11 @@ public class GameManager : MonoBehaviour
         //InputManager 세팅
         InputManager.Instance.SetPlayerController(playerController);
         InputManager.Instance.SetCameraController(cameraController);
-        
+
         // 카메라 타겟 세팅
         cameraController.SetTarget(player.transform);
-        
-    }
-    
-    
-    private void Start()
-    {
-        Init();
+        cameraController.ToggleThirdPerson(true);
 
     }
+
 }

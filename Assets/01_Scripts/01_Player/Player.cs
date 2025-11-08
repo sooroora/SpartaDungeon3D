@@ -8,26 +8,26 @@ public class Player : MonoBehaviour
     [Header("Camera Pivot")]
     [SerializeField] private Transform cameraPivotFirstPerson;
     [SerializeField] private Transform cameraPivotThirdPerson;
+    public Transform CameraPivotFirstPerson => cameraPivotFirstPerson;
+    public Transform CameraPivotThirdPerson => cameraPivotThirdPerson;
+    
     
     private PlayerController controller;
     private PlayerCondition condition;
     
-    public PlayerCondition Condition
-    {
-        get => condition;
-        set => condition = value;
-    }
+    public PlayerCondition Condition => condition;
 
 
     private void Awake()
     {
+        //CharacterManager.Instance.Player = this;
         controller = GetComponent<PlayerController>();
         condition = GetComponent<PlayerCondition>();
     }
 
     private void Start()
     {
-        CharacterManager.Instance.Player = this;
+        CharacterManager.Instance.SetPlayer(this);
     }
 
 

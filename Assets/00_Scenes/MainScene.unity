@@ -810,6 +810,7 @@ GameObject:
   - component: {fileID: 1162794019}
   - component: {fileID: 1162794021}
   - component: {fileID: 1162794020}
+  - component: {fileID: 1162794022}
   m_Layer: 5
   m_Name: Gauge_hunger
   m_TagString: Untagged
@@ -876,6 +877,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1162794018}
   m_CullTransparentMesh: 1
+--- !u!114 &1162794022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1162794018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf02956a4d7b3c944a069f6567b70a53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiBar: {fileID: 1797339378}
 --- !u!1 &1208323624
 GameObject:
   m_ObjectHideFlags: 0
@@ -928,10 +942,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf02956a4d7b3c944a069f6567b70a53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  curValue: 0
-  maxValue: 0
-  startValue: 0
-  passiveValue: 0
   uiBar: {fileID: 1305597106}
 --- !u!114 &1208323627
 MonoBehaviour:
@@ -1334,6 +1344,7 @@ GameObject:
   - component: {fileID: 1567276965}
   - component: {fileID: 1567276967}
   - component: {fileID: 1567276966}
+  - component: {fileID: 1567276968}
   m_Layer: 5
   m_Name: Gauge_stamina
   m_TagString: Untagged
@@ -1400,6 +1411,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1567276964}
   m_CullTransparentMesh: 1
+--- !u!114 &1567276968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1567276964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf02956a4d7b3c944a069f6567b70a53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiBar: {fileID: 357393290}
 --- !u!1 &1797339376
 GameObject:
   m_ObjectHideFlags: 0
@@ -1610,9 +1634,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cebdb3f0a0110454c9c73eb2c4db83c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: {fileID: 0}
-  hunger: {fileID: 0}
-  stamina: {fileID: 0}
+  health: {fileID: 1208323626}
+  hunger: {fileID: 1162794022}
+  stamina: {fileID: 1567276968}
 --- !u!1 &2081193381
 GameObject:
   m_ObjectHideFlags: 0
@@ -1744,8 +1768,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 076702fb598ce32499e0fabee107c888, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  commonStat: {fileID: 0}
-  playerConditionUI: {fileID: 0}
+  commonStat: {fileID: 11400000, guid: fe7536f84094ff948976b6652d5da039, type: 2}
   noHungerHealthDecay: 0
 --- !u!1001 &3459346142955203760
 PrefabInstance:
@@ -1755,6 +1778,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2955014785526326662, guid: 5817baf66004f114d84366faa5bc4cb4, type: 3}
+      propertyPath: maxXLookFirstPerson
+      value: 85
+      objectReference: {fileID: 0}
+    - target: {fileID: 2955014785526326662, guid: 5817baf66004f114d84366faa5bc4cb4, type: 3}
+      propertyPath: maxXLookThirdPerson
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 2955014785526326662, guid: 5817baf66004f114d84366faa5bc4cb4, type: 3}
+      propertyPath: minXLookFirstPerson
+      value: -85
+      objectReference: {fileID: 0}
+    - target: {fileID: 2955014785526326662, guid: 5817baf66004f114d84366faa5bc4cb4, type: 3}
+      propertyPath: minXLookThirdPerson
+      value: -35
+      objectReference: {fileID: 0}
     - target: {fileID: 7361199519760734319, guid: 5817baf66004f114d84366faa5bc4cb4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.8399999
@@ -1795,6 +1834,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7696762617457364530, guid: 5817baf66004f114d84366faa5bc4cb4, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
     - target: {fileID: 7696762617457364530, guid: 5817baf66004f114d84366faa5bc4cb4, type: 3}
       propertyPath: m_Name
       value: Camera_Root

@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -50,8 +46,9 @@ public class InputManager : MonoBehaviour
         playerInput.actions["Look"].canceled += OnLook;
         
         playerInput.actions["Jump"].started += OnJump;
-        playerInput.actions["Jump"].performed += OnJump;
-        playerInput.actions["Jump"].canceled += OnJump;
+        
+        playerInput.actions["Dash"].started += OnDash;
+        playerInput.actions["Dash"].canceled += OnDash;
     }
 
     public void SetPlayerController(PlayerController _playerController)
@@ -74,12 +71,21 @@ public class InputManager : MonoBehaviour
     }
     public void OnJump(InputAction.CallbackContext context)
     {
-        Debug.Log("ASDASD");
+        playerController?.OnJump();
+        
+    }
+
+    public void OnDash(InputAction.CallbackContext context)
+    {
+        Debug.Log("hhh");
         if (context.phase == InputActionPhase.Started)
         {
-            playerController?.OnJump();
+            playerController.OnDash(true);
         }
-        
+        else if (context.phase == InputActionPhase.Canceled)
+        {
+            playerController.OnDash(false);
+        }
     }
 
     ////// Camera

@@ -5,12 +5,17 @@ using UnityEngine;
 public class PlayerCondition : MonoBehaviour
 {
     [SerializeField] private PlayerCommonStat commonStat;
-    public PlayerConditionUI playerConditionUI;
+    PlayerConditionUI playerConditionUI;
 
-    Condition health ;
-    Condition hunger ;
+    public Condition Health => health;
+    public Condition Hunger => hunger;
+    public Condition Stamina => stamina;
+
+    Condition health;
+    Condition hunger;
     Condition stamina;
 
+    // 뭐하는애지
     public float noHungerHealthDecay;
     public event Action onTakeDamage;
 
@@ -18,11 +23,20 @@ public class PlayerCondition : MonoBehaviour
     Coroutine hungerCoroutine;
     Coroutine staminaCoroutine;
 
-    public void Init()
+    private void Awake()
     {
-        //health.Init();
+        health = new Condition(commonStat.MaxHealth, commonStat.MaxHealth, 0);
+        stamina = new Condition(commonStat.MaxStamina, commonStat.MaxStamina, 1.0f);
+        hunger = new Condition(commonStat.MaxHunger, commonStat.MaxHunger, -0.2f);
+        
+        
     }
-    
+
+    public void Start()
+    {
+        staminaCoroutine = StartCoroutine(PassiveConditionRoutine(stamina, 1.0f));
+    }
+
     private void Update()
     {
         // hunger.Subtract(hunger.passiveValue * Time.deltaTime);
@@ -41,7 +55,7 @@ public class PlayerCondition : MonoBehaviour
 
     public void Heal(float amount)
     {
-       //health.Add(amount);
+        //health.Add(amount);
     }
 
     public void Eat(float amount)
@@ -49,9 +63,15 @@ public class PlayerCondition : MonoBehaviour
         //hunger.Add(amount);
     }
 
+    public void Dash(float amount)
+    {
+        stamina.SetUsingCondition(true);
+        stamina.Add(-amount);
+    }
+
     public void Die()
     {
-        
+
     }
 
     IEnumerator PassiveConditionRoutine(Condition targetCondition, float _time)
@@ -59,6 +79,16 @@ public class PlayerCondition : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(_time);
+            
+            if(targetCondition.IsUsing == false)
+            {
+                targetCondition.Add(targetCondition.PassiveValue);
+            }
+            else
+            {
+                targetCondition.SetUsingCondition(false);
+                // 회복 시작까지 걸리는 시간을 추가로 기다리게 하는 애도 만들면 좋을 듯
+            }
             
         }
     }

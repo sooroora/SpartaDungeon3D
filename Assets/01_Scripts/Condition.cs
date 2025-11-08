@@ -6,7 +6,7 @@ public class Condition
 {
     public float CurrentValue
     {
-        get=>curValue;
+        get => curValue;
         private set => curValue = value;
     }
 
@@ -28,18 +28,22 @@ public class Condition
         private set => passiveValue = value;
     }
 
-    public float curValue;
-    public float maxValue;
-    public float startValue;
-    public float passiveValue;
+    public bool IsUsing => isUsing;
 
-    public void Init(float _max, float _start, float _passive)
+    private float curValue;
+    private float maxValue;
+    private float startValue;
+    private float passiveValue;
+
+    private bool isUsing;
+
+    public Condition(float _max, float _start, float _passive)
     {
         maxValue = _max;
         startValue = _start;
         passiveValue = _passive;
         curValue = startValue;
-        
+
     }
 
     public void SetMaxValue(float _max)
@@ -60,19 +64,19 @@ public class Condition
 
     public void Add(float amount)
     {
-        curValue = Mathf.Min(curValue + amount, maxValue);
+        curValue = Mathf.Clamp(curValue + amount, 0f, maxValue);
     }
 
-    public void Substract(float amount)
-    {
-        curValue = Mathf.Max(curValue - amount, 0.0f);
-    }
 
     public float GetPercentage()
     {
         return curValue / maxValue;
     }
-    
-    
-    
+
+    public void SetUsingCondition(bool _isUsing)
+    {
+        isUsing = _isUsing;
+    }
+
+
 }
