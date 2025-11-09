@@ -1,10 +1,10 @@
-Shader "Skybox/BlendedPanorama"
+Shader "Skybox/BlendedCubemap"
 {
     Properties
     {
-        _TexDay("Day Panorama (HDRI)", 2D) = "white" {}
-        _TexNight("Night Panorama (HDRI)", 2D) = "black" {}
-        _Blend("Blend (0 = Day, 1 = Night)", Range(0,1)) = 0
+        _TexDay("Day Cubemap", CUBE) = "" {}
+        _TexNight("Night Cubemap", CUBE) = "" {}
+        _Blend("Blend", Range(0,1)) = 0
         _Exposure("Exposure", Float) = 1
         _Rotation("Rotation Y (deg)", Range(0,360)) = 0
     }
@@ -22,11 +22,11 @@ Shader "Skybox/BlendedPanorama"
             #pragma fragment frag
             #include "UnityCG.cginc"
 
-            sampler2D _TexDay;
-            sampler2D _TexNight;
+            samplerCUBE _TexDay;
+            samplerCUBE _TexNight;
             float _Blend;
             float _Exposure;
-            float _Rotation;
+            float _Rotation; // degrees
 
             struct appdata
             {
@@ -39,48 +39,55 @@ Shader "Skybox/BlendedPanorama"
                 float3 dir : TEXCOORD0;
             };
 
+            // rotate direction around Y axis by degrees
             float3 rotateY(float3 v, float deg)
             {
                 float rad = deg * UNITY_PI / 180.0;
                 float s = sin(rad);
                 float c = cos(rad);
-                return float3( c*v.x + s*v.z,
+                return float3( c * v.x + s * v.z,
                                v.y,
-                              -s*v.x + c*v.z );
+                              -s * v.x + c * v.z );
             }
 
             v2f vert(appdata v)
             {
                 v2f o;
+                // Expand to clip space as a fullscreen cube (preserve sign) 
+                // Use vertex position as direction (skybox cube mesh should be centered at origin)
                 o.pos = UnityObjectToClipPos(v.vertex);
+                // direction in object space points from origin to vertex
                 o.dir = v.vertex.xyz;
                 return o;
             }
 
-            float2 dirToUV(float3 dir)
+            fixed4 SampleCubemap(samplerCUBE cube, float3 dir)
             {
-                dir = normalize(dir);
-                float u = 0.5 + atan2(dir.z, dir.x) / (2 * UNITY_PI);
-                float v = 0.5 - asin(dir.y) / UNITY_PI;
-                return float2(u, v);
-            }
-
-            fixed4 SamplePanorama(sampler2D tex, float3 dir)
-            {
-                float2 uv = dirToUV(dir);
-                fixed4 col = tex2D(tex, uv) * _Exposure;
-                return col;
+                // sample and apply exposure (linear space)
+                float4 col = texCUBE(cube, dir);
+                // ensure linear space before exposure multiply if necessary
+                return col * _Exposure;
             }
 
             fixed4 frag(v2f i) : SV_Target
             {
+                // normalize direction
                 float3 dir = normalize(i.dir);
+                // rotate around Y if requested
                 dir = rotateY(dir, _Rotation);
 
-                fixed4 dayCol = SamplePanorama(_TexDay, dir);
-                fixed4 nightCol = SamplePanorama(_TexNight, dir);
+                float4 dayCol = SampleCubemap(_TexDay, dir);
+                float4 nightCol = SampleCubemap(_TexNight, dir);
 
-                fixed4 finalCol = lerp(dayCol, nightCol, _Blend);
+                float4 finalCol = lerp(dayCol, nightCol, _Blend);
+
+                // If project using gamma space, convert linear->gamma for final output
+                #ifdef UNITY_COLORSPACE_GAMMA
+                    finalCol.rgb = finalCol.rgb;
+                #else
+                    finalCol.rgb = finalCol.rgb;
+                #endif
+
                 return finalCol;
             }
             ENDCG
