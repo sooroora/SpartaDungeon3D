@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private PlayerMovingStat movingStat;
     [SerializeField] private LayerMask groundLayerMask;
+
+    private Player player;
     Rigidbody rb;
 
     private Vector2 moveInput;
@@ -16,12 +18,14 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        player = GetComponent<Player>();
         rb = GetComponent<Rigidbody>();
     }
 
     private void FixedUpdate()
     {
         Move();
+        Rotate();
     }
 
     void Move()
@@ -29,12 +33,11 @@ public class PlayerController : MonoBehaviour
         float nowSpeed = movingStat.Speed;
 
         if (isDashing &&
-            CharacterManager.Instance.Player.Condition.Stamina.CurrentValue > 0.0f)
+            player.Condition.Stamina.CurrentValue > 0.0f)
         {
-            CharacterManager.Instance.Player.Condition.Dash(Time.deltaTime * 5.0f);
+            player.Condition.Dash(Time.deltaTime * 5.0f);
             nowSpeed = nowSpeed * movingStat.DashMultiplier;
         }
-
 
         this.transform.position +=
             forward * (moveInput.y * nowSpeed * Time.deltaTime);
@@ -42,6 +45,14 @@ public class PlayerController : MonoBehaviour
         Vector3 right = Vector3.Cross(Vector3.up, forward).normalized;
         this.transform.position +=
             right * (moveInput.x * nowSpeed * Time.deltaTime);
+        
+        player.UpdateForward(forward);
+        
+    }
+
+    void Rotate()
+    {
+        
     }
 
     public void OnJump()
@@ -84,7 +95,6 @@ public class PlayerController : MonoBehaviour
                 return true;
             }
         }
-
         return false;
     }
 }

@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     public Player Player => player;
     [SerializeField] Player player;
     [SerializeField] PlayerController playerController;
-    [SerializeField] CameraController cameraController;
+    //[SerializeField] CameraController cameraController;
 
     private void Awake()
     {
@@ -42,11 +42,11 @@ public class GameManager : MonoBehaviour
     {
         //InputManager 세팅
         InputManager.Instance.SetPlayerController(playerController);
-        InputManager.Instance.SetCameraController(cameraController);
+        InputManager.Instance.SetCameraController(CameraManager.Instance.CameraController);
 
         // 카메라 타겟 세팅
-        cameraController.SetTarget(player.transform);
-        cameraController.ToggleThirdPerson(true);
+        CameraManager.Instance.CameraController.SetTarget(player.transform);
+        CameraManager.Instance.CameraController.ToggleThirdPerson(true);
 
     }
 
