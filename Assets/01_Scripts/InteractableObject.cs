@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 public class InteractableObject : MonoBehaviour, IInteractable
 {
-    [SerializeField] private BaseObjectInfo objectInfo;
+    [SerializeField] private BaseObjectData objectData;
     [SerializeField] private GameObject interactionMark;
  
     [Header("Interactable Event")]
@@ -35,7 +35,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
     {
         AddOnInteractionRangeEnter(() =>
         {
-            InGameUIManager.Instance?.ShowInteractionInfo(objectInfo);
+            InGameUIManager.Instance?.ShowInteractionInfo(objectData);
         });
         AddOnInteractionRangeExit(()=>
         {

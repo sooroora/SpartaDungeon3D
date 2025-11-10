@@ -23,9 +23,9 @@ public class InGameUIManager : MonoBehaviour
         crosshair.SetActive(state);
     }
 
-    public void ShowInteractionInfo(BaseObjectInfo info)
+    public void ShowInteractionInfo(BaseObjectData data)
     {
-        interactionInfoUI.SetInteractionInfo(info.displayName, info.description);
+        interactionInfoUI.SetInteractionInfo(data.displayName, data.description);
         interactionInfoUI.gameObject.SetActive(true);
     }
 

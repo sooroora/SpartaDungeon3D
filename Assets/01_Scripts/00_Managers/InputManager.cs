@@ -13,6 +13,8 @@ public class InputManager : MonoBehaviour
     PlayerInput playerInput;
     PlayerController playerController;
     CameraController cameraController;
+    
+    bool isUIOpen = false;
 
     private void Awake()
     {
@@ -30,7 +32,7 @@ public class InputManager : MonoBehaviour
 
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
     }
 
     void RegisterActions()
