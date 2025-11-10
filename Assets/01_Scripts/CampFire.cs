@@ -21,13 +21,11 @@ public class CampFire : InteractableObject
     public override void InteractionRangeEnter()
     {
         base.InteractionRangeEnter();
-        Debug.Log(gameObject.name + " Enter");
     }
 
     public override void InteractionRangeExit()
     {
         base.InteractionRangeExit();
-        Debug.Log(gameObject.name + " Exit");
     }
 
 

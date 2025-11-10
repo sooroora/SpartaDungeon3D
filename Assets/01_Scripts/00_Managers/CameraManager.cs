@@ -12,6 +12,8 @@ public class CameraManager : MonoBehaviour
         private set => instance = value;
     }
 
+    public Camera Cam => cam;
+    private Camera cam;
     public CameraController CameraController => cameraController;
     public CameraEffectController CameraEffectController => cameraEffectController;
     private CameraController cameraController;
@@ -24,6 +26,7 @@ public class CameraManager : MonoBehaviour
             instance = this;
             cameraController = GetComponent<CameraController>();
             cameraEffectController = GetComponent<CameraEffectController>();
+            cam = Camera.main;
         }
         else if (instance != this)
             Destroy(gameObject);

@@ -7,21 +7,21 @@ using UnityEngine.Serialization;
 public class CameraController : MonoBehaviour
 {
 
-    [SerializeField] private Transform containerX;
-    [SerializeField] private Transform containerY;
+    [SerializeField] private Transform container;
+    [SerializeField] private Transform containerFirstPersonX;
 
     private Vector3 thirdPersonPosition = new Vector3(0, 3.0f, -6.5f);
     private Vector3 firstPersonPosition = new Vector3(-0.25f, 1.6f, 0.65f);
 
     public Transform ContainerX
     {
-        get => containerX;
-        private set => containerX = value;
+        get => containerFirstPersonX;
+        private set => containerFirstPersonX = value;
     }
     public Transform ContainerY
     {
-        get => containerY;
-        private set => containerY = value;
+        get => container;
+        private set => container = value;
     }
 
 
@@ -43,6 +43,8 @@ public class CameraController : MonoBehaviour
 
 
     private Transform target;
+
+    public bool IsThirdPerson => isThirdPerson;
     bool isThirdPerson = false;
 
 
@@ -64,16 +66,18 @@ public class CameraController : MonoBehaviour
 
     public bool ToggleCameraPerspective()
     {
+        container.transform.localRotation = Quaternion.identity;
+        containerFirstPersonX.transform.localRotation = Quaternion.identity;
         if (isThirdPerson)
         {
             isThirdPerson = false;
-            containerX.transform.localPosition = firstPersonPosition;
+            containerFirstPersonX.transform.localPosition = firstPersonPosition;
             return true;
         }
         else
         {
             isThirdPerson = true;
-            containerX.transform.localPosition = thirdPersonPosition;
+            containerFirstPersonX.transform.localPosition = thirdPersonPosition;
             return false;
         }
     }
@@ -83,12 +87,12 @@ public class CameraController : MonoBehaviour
         isThirdPerson = _isThirdPerson;
         if (isThirdPerson)
         {
-            containerX.transform.localPosition = thirdPersonPosition;
+            containerFirstPersonX.transform.localPosition = thirdPersonPosition;
         }
 
         else
         {
-            containerX.transform.localPosition = firstPersonPosition;
+            containerFirstPersonX.transform.localPosition = firstPersonPosition;
         }
     }
 
@@ -104,9 +108,9 @@ public class CameraController : MonoBehaviour
         Ray ray = new Ray(this.transform.position,
             Vector3.Normalize(target.transform.position - this.transform.forward));
 
-
         if (Physics.Raycast(ray, out hit))
         {
+
         }
     }
 
@@ -137,8 +141,14 @@ public class CameraController : MonoBehaviour
 
     public void RotateCamera()
     {
-        containerY.localEulerAngles = new Vector3(-camCurRotX, containerY.localEulerAngles.y, 0);
-        containerY.transform.eulerAngles = new Vector3(containerY.transform.eulerAngles.x, camCurRotY, 0);
+        container.transform.localEulerAngles = new Vector3(0, camCurRotY, 0);
+
+        if (isThirdPerson)
+            container.localEulerAngles = new Vector3(-camCurRotX, container.localEulerAngles.y, 0);
+        else
+            containerFirstPersonX.transform.eulerAngles = new Vector3(-camCurRotX, containerFirstPersonX.transform.eulerAngles.y, containerFirstPersonX.transform.eulerAngles.z);
+        // containerY.localEulerAngles = new Vector3(-camCurRotX, containerY.localEulerAngles.y, 0);
+        // 
     }
 
     public void MoveCamera()

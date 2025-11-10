@@ -10,5 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 31731851a36c42719603cd5910d5e4a6, type: 3}
-  m_Name: InteractableObject
+  m_Name: CaapFire
   m_EditorClassIdentifier: 
+  displayName: "\uCEA0\uD504\uD30C\uC774\uC5B4"
+  description: "\uC8FC\uBCC0\uC5D0 \uC788\uC73C\uBA74 \uB530\uB73B\uD558\uB2E4."

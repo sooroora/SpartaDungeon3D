@@ -17,7 +17,12 @@ public class Player : MonoBehaviour
     private PlayerCondition condition;
     private PlayerMotionController motionController;
 
+
+    public PlayerController Controller => controller;
     public PlayerCondition Condition => condition;
+    public PlayerMotionController MotionController => motionController;
+
+    public Rigidbody Rigidbody => controller.Rigidbody;
 
 
     private void Awake()

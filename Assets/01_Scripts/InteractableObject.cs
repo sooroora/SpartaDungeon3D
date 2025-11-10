@@ -6,6 +6,7 @@ using UnityEngine.Events;
 
 public class InteractableObject : MonoBehaviour, IInteractable
 {
+    [SerializeField] private BaseObjectInfo objectInfo;
     [SerializeField] private GameObject interactionMark;
  
     [Header("Interactable Event")]
@@ -28,6 +29,18 @@ public class InteractableObject : MonoBehaviour, IInteractable
                 interactionMark.SetActive(false);
             });
         }
+    }
+
+    private void Start()
+    {
+        AddOnInteractionRangeEnter(() =>
+        {
+            InGameUIManager.Instance?.ShowInteractionInfo(objectInfo);
+        });
+        AddOnInteractionRangeExit(()=>
+        {
+            InGameUIManager.Instance?.HideInteractionInfo();
+        });
     }
 
     public void AddOnInteraction(UnityAction action)

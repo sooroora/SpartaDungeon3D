@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour
 
         // 카메라 타겟 세팅
         CameraManager.Instance.CameraController.SetTarget(player.transform);
+        CameraManager.Instance.CameraController.SetCameraPerspective(true);
 
     }
 

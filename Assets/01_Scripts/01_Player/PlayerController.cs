@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
      *
      */
     private Player player;
+
+    public Rigidbody Rigidbody => rb;
     Rigidbody rb;
 
 
@@ -122,10 +124,22 @@ public class PlayerController : MonoBehaviour
 
     public void CheckInteractable()
     {
-        Vector3 startPoint = interactionPoint.position + (playerForward * interactForwardOffset) + (Vector3.up * interactheightOffset);
+        RaycastHit[] hits;
+        
+        if (CameraManager.Instance.CameraController.IsThirdPerson)
+        {
+            Vector3 startPoint = interactionPoint.position + (playerForward * interactForwardOffset) + (Vector3.up * interactheightOffset);
 
-        // interactable 이 layer 가 무조건 Interactable 이지는 않아서 all 로 변경해서 찾기
-        RaycastHit[] hits = Physics.SphereCastAll(startPoint, interactSphereSize, playerForward, interactMaxDistance);
+            // interactable 이 layer 가 무조건 Interactable 이지는 않아서 all 로 변경해서 찾기
+             hits = Physics.SphereCastAll(startPoint, interactSphereSize, playerForward, interactMaxDistance);
+           
+        }
+        else
+        {
+            Ray ray = CameraManager.Instance.Cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+            hits = Physics.RaycastAll(ray,interactMaxDistance);
+        }
+        
         if (hits.Length > 0)
         {
             Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
@@ -147,6 +161,11 @@ public class PlayerController : MonoBehaviour
         nowFocusInteractable?.InteractionRangeExit();
         nowFocusInteractable = null;
 
+    }
+
+    public void ForceJump(float jumpForce)
+    {
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 
 
