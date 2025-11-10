@@ -45,7 +45,10 @@ public class DayNightCycle : MonoBehaviour
         float skyBoxBlend = (time <= 0.5f) ? (time / 0.5f) : ((1f - time) / 0.5f);
         skyBox.SetFloat("_Blend", skyBoxBlend);
 
+        // 그림자 때문에 로테이션 하긴 해야함!!
         sun.intensity = 1.0f - (skyBoxBlend);
+        
+        
         //
         // UpdateLighting(sun, sunColor, sunIntensity);
         // UpdateLighting(moon, moonColor, moonIntensity);

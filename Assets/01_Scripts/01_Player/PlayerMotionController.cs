@@ -8,6 +8,6 @@ public class PlayerMotionController : MonoBehaviour
 
     public void Rotate(Vector3 forward)
     {
-        modelRoot.Rotate(forward);
+        transform.rotation = Quaternion.LookRotation(forward, Vector3.up);
     }
 }

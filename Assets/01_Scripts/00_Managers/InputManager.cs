@@ -44,11 +44,16 @@ public class InputManager : MonoBehaviour
         playerInput.actions["Look"].started += OnLook;
         playerInput.actions["Look"].performed += OnLook;
         playerInput.actions["Look"].canceled += OnLook;
-        
+
         playerInput.actions["Jump"].started += OnJump;
-        
+
         playerInput.actions["Dash"].started += OnDash;
         playerInput.actions["Dash"].canceled += OnDash;
+
+        playerInput.actions["ToggleCameraPerspective"].started += OnToggleCameraPerspective;
+        
+        playerInput.actions["Interaction"].started += OnInteraction;
+    
     }
 
     public void SetPlayerController(PlayerController _playerController)
@@ -67,17 +72,16 @@ public class InputManager : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         playerController?.UpdateMoveInput(context.ReadValue<Vector2>());
-        
+
     }
+
     public void OnJump(InputAction.CallbackContext context)
     {
         playerController?.OnJump();
-        
     }
 
     public void OnDash(InputAction.CallbackContext context)
     {
-        Debug.Log("hhh");
         if (context.phase == InputActionPhase.Started)
         {
             playerController.OnDash(true);
@@ -88,18 +92,25 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    public void OnInteraction(InputAction.CallbackContext context)
+    {
+        //playerController.
+    }
+
     ////// Camera
     public void OnLook(InputAction.CallbackContext context)
     {
         Vector2 mouseDelta = context.ReadValue<Vector2>();
-        cameraController?.UpdateLookInput(mouseDelta);
-        
-        
-        // lateUpdate 때문에 forward가 늦게 구해질 수 있어서
-        // UpdateLookInput에서 반환하는 방식으로 바꿔바야할 것 같음
-        Vector3 forward = Quaternion.Euler(0, cameraController.ContainerY.localEulerAngles.y, 0)
-                          * Vector3.forward;
+        Vector3 forward = cameraController?.UpdateLookInput(mouseDelta) ?? Vector3.forward;
+
+        // Vector3 forward = Quaternion.Euler(0, cameraController.ContainerY.localEulerAngles.y, 0)
+        //                   * Vector3.forward;
         playerController?.UpdateForward(forward);
+    }
+
+    public void OnToggleCameraPerspective(InputAction.CallbackContext context)
+    {
+        cameraController.ToggleCameraPerspective();
     }
 
 

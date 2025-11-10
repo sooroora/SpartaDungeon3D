@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
 
     private PlayerController controller;
     private PlayerCondition condition;
+    private PlayerMotionController motionController;
 
     public PlayerCondition Condition => condition;
 
@@ -24,6 +25,7 @@ public class Player : MonoBehaviour
         //CharacterManager.Instance.Player = this;
         controller = GetComponent<PlayerController>();
         condition = GetComponent<PlayerCondition>();
+        motionController = GetComponent<PlayerMotionController>();
     }
 
     private void Start()
@@ -31,8 +33,8 @@ public class Player : MonoBehaviour
 
     }
 
-    public void UpdateForward(Vector3 forward)
+    public void UpdateMovingForward(Vector3 forward)
     {
-        
+        motionController.Rotate(forward);
     }
 }

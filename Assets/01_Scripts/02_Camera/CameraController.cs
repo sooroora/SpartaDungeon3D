@@ -5,10 +5,13 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 public class CameraController : MonoBehaviour
-{  
-    
+{
+
     [SerializeField] private Transform containerX;
     [SerializeField] private Transform containerY;
+
+    private Vector3 thirdPersonPosition = new Vector3(0, 3.0f, -6.5f);
+    private Vector3 firstPersonPosition = new Vector3(-0.25f, 1.6f, 0.65f);
 
     public Transform ContainerX
     {
@@ -20,25 +23,34 @@ public class CameraController : MonoBehaviour
         get => containerY;
         private set => containerY = value;
     }
-    
-  
+
+
     [Header("Camera Option")]
     [SerializeField] private float lookSensitivity = 0.2f;
+
     [SerializeField] private float defaultCameraDistance = 5.0f;
     [SerializeField] private float cameraCollisionOffset = 2.0f;
 
-    private float camCurXRot;
+    private float camCurRotX;
+    private float camCurRotY;
+
     [Header("Camera Rotation X Limit")]
     [SerializeField] private float minXLookFirstPerson;
+
     [SerializeField] private float maxXLookFirstPerson;
     [SerializeField] private float minXLookThirdPerson;
     [SerializeField] private float maxXLookThirdPerson;
 
-    
+
     private Transform target;
     bool isThirdPerson = false;
-    
-    
+
+
+    public void Awake()
+    {
+        SetCameraPerspective(true);
+    }
+
     private void LateUpdate()
     {
         MoveCamera();
@@ -50,21 +62,36 @@ public class CameraController : MonoBehaviour
         target = _target;
     }
 
-    public void ToggleThirdPerson(bool _isThirdPerson)
+    public bool ToggleCameraPerspective()
     {
-        isThirdPerson = _isThirdPerson;
-
         if (isThirdPerson)
         {
-            containerX.transform.localPosition = new Vector3(0, 3.0f, -6.5f);
+            isThirdPerson = false;
+            containerX.transform.localPosition = firstPersonPosition;
+            return true;
         }
         else
         {
-            containerX.transform.localPosition = new Vector3(0, 0.0f, 0.0f);
+            isThirdPerson = true;
+            containerX.transform.localPosition = thirdPersonPosition;
+            return false;
         }
     }
 
-   
+    public void SetCameraPerspective(bool _isThirdPerson)
+    {
+        isThirdPerson = _isThirdPerson;
+        if (isThirdPerson)
+        {
+            containerX.transform.localPosition = thirdPersonPosition;
+        }
+
+        else
+        {
+            containerX.transform.localPosition = firstPersonPosition;
+        }
+    }
+
 
     private RaycastHit hit;
 
@@ -86,23 +113,32 @@ public class CameraController : MonoBehaviour
 
     private Vector2 mouseDelta;
 
-    public void UpdateLookInput(Vector2 delta)
+    public Vector3 UpdateLookInput(Vector2 delta)
     {
         mouseDelta = delta;
+
+        CalcCameraRotation();
+        Vector3 forward = Quaternion.Euler(0, camCurRotY, 0) * Vector3.forward;
+        return forward;
+    }
+
+    public void CalcCameraRotation()
+    {
+        camCurRotX += mouseDelta.y * lookSensitivity;
+
+        if (isThirdPerson)
+            camCurRotX = Mathf.Clamp(camCurRotX, minXLookThirdPerson, maxXLookThirdPerson);
+        else
+            camCurRotX = Mathf.Clamp(camCurRotX, minXLookFirstPerson, maxXLookFirstPerson);
+
+        camCurRotY += mouseDelta.x * lookSensitivity;
+
     }
 
     public void RotateCamera()
     {
-        camCurXRot += mouseDelta.y * lookSensitivity;
-        
-        if(isThirdPerson)
-            camCurXRot = Mathf.Clamp(camCurXRot, minXLookThirdPerson, maxXLookThirdPerson);
-        else
-            camCurXRot = Mathf.Clamp(camCurXRot, minXLookFirstPerson, maxXLookFirstPerson);
-        
-        containerY.localEulerAngles = new Vector3(-camCurXRot, containerY.localEulerAngles.y, 0);
-
-        containerY.transform.eulerAngles += new Vector3(0, mouseDelta.x * lookSensitivity, 0);
+        containerY.localEulerAngles = new Vector3(-camCurRotX, containerY.localEulerAngles.y, 0);
+        containerY.transform.eulerAngles = new Vector3(containerY.transform.eulerAngles.x, camCurRotY, 0);
     }
 
     public void MoveCamera()

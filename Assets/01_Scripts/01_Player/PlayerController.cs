@@ -6,26 +6,57 @@ using UnityEngine.TextCore.Text;
 
 public class PlayerController : MonoBehaviour
 {
+    /*
+     *  SerializeField 들
+     */
     [SerializeField] private PlayerMovingStat movingStat;
+    [SerializeField] private Transform interactionPoint;
+
     [SerializeField] private LayerMask groundLayerMask;
 
+    [Header("Interaction Range")]
+    public float interactForwardOffset = 2.0f;
+
+    public float interactheightOffset = 0.0f;
+    public float interactMaxDistance = 5.0f;
+    public float interactSphereSize = 1.0f;
+
+
+    /*
+     *
+     */
     private Player player;
     Rigidbody rb;
 
+
+    /*
+     *  이동 정보들
+     */
     private Vector2 moveInput;
-    Vector3 forward;
+    private Vector3 camForward;
+    private Vector3 playerForward;
     bool isDashing;
+
+
+    /*
+     *  인터랙션 관련
+     */
+    IInteractable nowFocusInteractable;
 
     private void Awake()
     {
-        player = GetComponent<Player>();
         rb = GetComponent<Rigidbody>();
+        player = GetComponent<Player>();
+    }
+
+    private void Update()
+    {
+        CheckInteractable();
     }
 
     private void FixedUpdate()
     {
         Move();
-        Rotate();
     }
 
     void Move()
@@ -39,38 +70,29 @@ public class PlayerController : MonoBehaviour
             nowSpeed = nowSpeed * movingStat.DashMultiplier;
         }
 
-        this.transform.position +=
-            forward * (moveInput.y * nowSpeed * Time.deltaTime);
+        Vector3 prePos = player.transform.position;
 
-        Vector3 right = Vector3.Cross(Vector3.up, forward).normalized;
+        this.transform.position +=
+            camForward * (moveInput.y * nowSpeed * Time.deltaTime);
+
+        Vector3 right = Vector3.Cross(Vector3.up, camForward).normalized;
         this.transform.position +=
             right * (moveInput.x * nowSpeed * Time.deltaTime);
-        
-        player.UpdateForward(forward);
-        
-    }
 
-    void Rotate()
-    {
-        
-    }
+        Vector3 nowPos = player.transform.position;
 
-    public void OnJump()
-    {
-        if (IsGrounded())
+
+        // 움직일때만 바뀌게
+        if (moveInput != Vector2.zero)
         {
-            rb.AddForce(Vector3.up * movingStat.JumpForce, ForceMode.Impulse);
+            playerForward = Vector3.Normalize(nowPos - prePos);
+            player.UpdateMovingForward(playerForward);
         }
-    }
-
-    public void OnDash(bool _isDashing)
-    {
-        isDashing = _isDashing;
     }
 
     public void UpdateForward(Vector3 _forward)
     {
-        forward = _forward;
+        camForward = _forward;
     }
 
     public void UpdateMoveInput(Vector2 input)
@@ -97,4 +119,70 @@ public class PlayerController : MonoBehaviour
         }
         return false;
     }
+
+    public void CheckInteractable()
+    {
+        Vector3 startPoint = interactionPoint.position + (playerForward * interactForwardOffset) + (Vector3.up * interactheightOffset);
+
+        // interactable 이 layer 가 무조건 Interactable 이지는 않아서 all 로 변경해서 찾기
+        RaycastHit[] hits = Physics.SphereCastAll(startPoint, interactSphereSize, playerForward, interactMaxDistance);
+        if (hits.Length > 0)
+        {
+            Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+            for (int i = 0; i < hits.Length; i++)
+            {
+                if (hits[i].collider.TryGetComponent<IInteractable>(out IInteractable interactable))
+                {
+                    if (nowFocusInteractable != interactable)
+                    {
+                        nowFocusInteractable?.InteractionRangeExit();
+                        nowFocusInteractable = interactable;
+                        nowFocusInteractable?.InteractionRangeEnter();
+                    }
+                    return;
+                }
+            }
+        }
+
+        nowFocusInteractable?.InteractionRangeExit();
+        nowFocusInteractable = null;
+
+    }
+
+
+    /*
+     *  Receive Input
+     */
+    public void OnJump()
+    {
+        if (IsGrounded())
+        {
+            rb.AddForce(Vector3.up * movingStat.JumpForce, ForceMode.Impulse);
+        }
+    }
+
+    public void OnDash(bool _isDashing)
+    {
+        isDashing = _isDashing;
+    }
+
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        if (interactionPoint == null) return;
+
+        Gizmos.color = Color.red;
+
+        Vector3 startPoint = interactionPoint.position + (playerForward * interactForwardOffset) + (Vector3.up * interactheightOffset);
+        Gizmos.DrawWireSphere(startPoint, interactSphereSize);
+        Gizmos.DrawWireSphere(startPoint + playerForward * interactMaxDistance, interactSphereSize);
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawLine(
+            startPoint,
+            startPoint + playerForward * interactMaxDistance);
+
+
+    }
+#endif
 }

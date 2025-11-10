@@ -17,7 +17,7 @@
                 },
                 {
                     "name": "Interaction",
-                    "type": "Value",
+                    "type": "Button",
                     "id": "8c6b2edf-6d7b-4262-ad20-a01c2c0b8dac",
                     "expectedControlType": "",
                     "processors": "",
@@ -55,6 +55,15 @@
                     "name": "Dash",
                     "type": "Button",
                     "id": "2373f180-cc2e-4dc9-a577-d55e6075d244",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ToggleCameraPerspective",
+                    "type": "Button",
+                    "id": "befc720e-c28c-4dbb-8d5f-7a6503687ecc",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -224,6 +233,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "086d9e9b-9d23-4ed3-bcf6-ec96f9bf838b",
+                    "path": "<Keyboard>/v",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleCameraPerspective",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
