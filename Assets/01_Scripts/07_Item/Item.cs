@@ -1,19 +1,47 @@
-﻿public class Item
-{
-    public string ItemName => itemName;
-    public string ItemDescription => itemDescription;
-    
-    private string itemName;
-    private string itemDescription;
-    
-    private bool canStack;
-    private int maxStack;
+﻿using UnityEngine;
 
-    public Item(string _itemName, string _itemDescription, bool _canStack, int _maxStack)
+public class Item
+{
+    /// <summary>
+    /// 실제 ItemData 이름 (Item_Carrot)
+    /// </summary>
+    public string Name => name;
+
+    /// <summary>
+    /// display 이름 (당근)
+    /// </summary>
+    public string DisplayName => displayName;
+
+    public string Description => description;
+    public int Count => count;
+    public bool CanStack => canStack;
+    public int MaxCount => maxCount;
+
+    private string name;
+    private string displayName;
+    private string description;
+
+    private int count;
+    private bool canStack;
+    private int maxCount;
+
+    public Item(ItemData itemData)
     {
-        itemName = _itemName;
-        itemDescription = _itemDescription;
-        canStack = _canStack;
-        maxStack = _maxStack;
+        name = itemData.name;
+        displayName = itemData.displayName;
+        description = itemData.description;
+        canStack = itemData.canStack;
+        maxCount = itemData.maxCountAmount;
+    }
+
+    public int AddCount(int amount)
+    {
+        if (canStack == false)
+        {
+            return amount > 0 ? 0 : 1;
+        }
+
+        count += Mathf.Clamp(amount, 0, maxCount);
+        return count;
     }
 }

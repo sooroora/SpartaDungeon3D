@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 
 public class ItemData : BaseObjectData
@@ -10,6 +11,13 @@ public class ItemData : BaseObjectData
 
     [Header("Stacking")]
     public bool canStack;
-    public int maxStackAmount = 99;
+    [FormerlySerializedAs("maxStackAmount")] public int maxCountAmount = 99;
+
+    public virtual Item NewItem()
+    {
+        Item newItem = new Item(this);
+        return newItem;
+    }
+    
     
 }

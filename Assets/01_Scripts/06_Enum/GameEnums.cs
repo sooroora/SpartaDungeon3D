@@ -4,7 +4,7 @@ public enum DebuffType
     Poison,
 }
 
-public enum EquipmentType
+public enum EquipType
 {
     Helmet,
     Armor,

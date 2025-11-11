@@ -47,6 +47,7 @@ public class SoundManager : MonoBehaviour
     private List<AudioSource> sfxAudioSources;
 
 
+    // 리소스에서 옮기지 않는 방법으로 변경 필요
     private void Awake()
     {
         if (instance == null)
