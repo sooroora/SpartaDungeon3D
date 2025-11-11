@@ -19,4 +19,5 @@ public class VerticalMover : MonoBehaviour
         float newY = originY + Mathf.PingPong(Time.time * speed, moveRange * 2f) - moveRange;
         transform.localPosition = new Vector3(transform.localPosition.x, newY, transform.localPosition.z);
     }
+    
 }

@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 playerForward;
     bool isDashing;
 
+    private Vector3 forceMovementPos;
 
     /*
      *  인터랙션 관련
@@ -91,6 +92,13 @@ public class PlayerController : MonoBehaviour
             player.UpdateMovingForward(playerForward);
         }
     }
+    
+    public void ForceMove(Vector3 movingPos)
+    {
+        this.transform.position +=
+            forceMovementPos;
+    }
+
 
     public void UpdateForward(Vector3 _forward)
     {
@@ -161,13 +169,15 @@ public class PlayerController : MonoBehaviour
         nowFocusInteractable?.InteractionRangeExit();
         nowFocusInteractable = null;
 
-    }
+    } 
+ 
 
     public void ForceJump(float jumpForce)
     {
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 
+   
 
     /*
      *  Receive Input
