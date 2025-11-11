@@ -10,13 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3dccc7674ebd9ef4b9919e0059568f31, type: 3}
-  m_Name: ItemInfo
+  m_Name: Item_Carrot
   m_EditorClassIdentifier: 
-  displayName: 
-  description: 
-  itemType: 0
+  displayName: "\uB2F9\uADFC"
+  description: "\uB9DB\uC788\uB2E4."
+  itemType: 2
   icon: {fileID: 0}
   dropPrefab: {fileID: 0}
-  canStack: 0
+  canStack: 1
   maxStackAmount: 99
-  consumables: []
+  consumables:
+  - consumableType: 0
+    amount: 10
+  - consumableType: 1
+    amount: 5

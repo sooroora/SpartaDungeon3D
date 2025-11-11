@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,8 +15,10 @@ public class InputManager : MonoBehaviour
     PlayerInput playerInput;
     PlayerController playerController;
     CameraController cameraController;
-    
+
+    public bool IsUIOpen => isUIOpen;
     bool isUIOpen = false;
+    List<InputAction> playerInputList;
 
     private void Awake()
     {
@@ -32,12 +36,28 @@ public class InputManager : MonoBehaviour
 
     private void Start()
     {
-        //Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    private void Update()
+    {
+        //test
+
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            OpenUI();
+        }
+        else if (Input.GetKeyDown(KeyCode.F2))
+        {
+            CloseUI();
+        }
+
     }
 
     void RegisterActions()
     {
         playerInput = GetComponent<PlayerInput>();
+        playerInputList = new List<InputAction>();
 
         playerInput.actions["Move"].started += OnMove;
         playerInput.actions["Move"].performed += OnMove;
@@ -53,9 +73,17 @@ public class InputManager : MonoBehaviour
         playerInput.actions["Dash"].canceled += OnDash;
 
         playerInput.actions["ToggleCameraPerspective"].started += OnToggleCameraPerspective;
-        
+
         playerInput.actions["Interaction"].started += OnInteraction;
-    
+
+        // playerInputList에 담아두기
+        // 많아지면 enum에 넣고 for문으로 바꾸기
+        playerInputList.Add(playerInput.actions["Move"]);
+        playerInputList.Add(playerInput.actions["Look"]);
+        playerInputList.Add(playerInput.actions["Jump"]);
+        playerInputList.Add(playerInput.actions["Dash"]);
+        playerInputList.Add(playerInput.actions["ToggleCameraPerspective"]);
+        playerInputList.Add(playerInput.actions["Interaction"]);
     }
 
     public void SetPlayerController(PlayerController _playerController)
@@ -74,7 +102,6 @@ public class InputManager : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         playerController?.UpdateMoveInput(context.ReadValue<Vector2>());
-
     }
 
     public void OnJump(InputAction.CallbackContext context)
@@ -113,6 +140,26 @@ public class InputManager : MonoBehaviour
     public void OnToggleCameraPerspective(InputAction.CallbackContext context)
     {
         cameraController.ToggleCameraPerspective();
+    }
+
+    public void OpenUI()
+    {
+        isUIOpen = true;
+        Cursor.lockState = CursorLockMode.None;
+        foreach (InputAction action in playerInputList)
+        {
+            action.Disable();
+        }
+    }
+
+    public void CloseUI()
+    {
+        isUIOpen = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        foreach (InputAction action in playerInputList)
+        {
+            action.Enable();
+        }
     }
 
 

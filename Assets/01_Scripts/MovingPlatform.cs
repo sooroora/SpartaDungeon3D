@@ -26,7 +26,9 @@ public class MovingPlatform : MonoBehaviour
         {
             
             player.transform.SetParent(followTransform, true);
-            //player.transform.localScale = new Vector3(1f/this.transform.localScale.x, 1f/this.transform.localScale.y, 1f/this.transform.localScale.z);
+            
+            // parent 안 붙이고 움직이고 싶은데 Player의 FixedUpdate에서 움직이게 해도 플랫폼이 덜그럭 거리는 문제가 있음
+            // 다른 거 먼저 처리하고 시간남으면 생각하기
             //player.Controller.ForceMove(nowMovingPos);
         }
     }

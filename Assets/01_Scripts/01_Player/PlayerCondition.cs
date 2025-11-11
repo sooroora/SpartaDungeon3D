@@ -81,7 +81,8 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IDebuffable
 
     public void TakeDamage(int damage)
     {
-
+        CameraManager.Instance.CameraEffectController.ShowHitIndicator();
+        health.Add(-damage);
     }
 
     public void TakeDebuff(DebuffType debuffType, int amount, float debuffTime, float damageInterval = 1)
