@@ -1,6 +1,6 @@
 ﻿
 [System.Serializable]
-public class ItemDataConsumable
+public class ConsumableEffect
 {
     public ConsumableType consumableType;
     public float amount;

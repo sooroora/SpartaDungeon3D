@@ -62,6 +62,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b48ce741646fecd4395aef61df22717e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5244546009959443818}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b48ce741646fecd4395aef61df22717e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4351592463975163055}
   m_SourcePrefab: {fileID: 100100000, guid: b48ce741646fecd4395aef61df22717e, type: 3}
 --- !u!1 &1722453167880356577 stripped
 GameObject:
@@ -117,3 +120,26 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4019739448705449665, guid: b48ce741646fecd4395aef61df22717e, type: 3}
+--- !u!114 &4351592463975163055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722453167880356577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eed4293536609ce4694012d1ac654e25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectData: {fileID: 11400000, guid: 9017f53da9a2e8240b5da776929b86f5, type: 2}
+  interactionMark: {fileID: 0}
+  OnInteraction:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInteractionRangeEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInteractionRangeExit:
+    m_PersistentCalls:
+      m_Calls: []

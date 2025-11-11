@@ -154,7 +154,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 183
   interactForwardOffset: 0.5
-  interactheightOffset: -0.5
+  interactheightOffset: -0.7
   interactMaxDistance: 2
   interactSphereSize: 0.9
 --- !u!114 &9090513250551125222

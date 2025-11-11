@@ -4,11 +4,14 @@ public enum DebuffType
     Poison,
 }
 
-public enum ItemType
+public enum EquipmentType
 {
-    Resource,
-    Equipable,
-    Consumable,
+    Helmet,
+    Armor,
+    Shoes,
+    Weapon,
+    Ax,
+    Pickax,
 }
 
 public enum ConsumableType

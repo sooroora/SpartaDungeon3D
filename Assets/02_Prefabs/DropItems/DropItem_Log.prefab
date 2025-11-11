@@ -62,6 +62,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e114c76a9b9edb34cbc3bf1245679184, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5166903737237924691}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e114c76a9b9edb34cbc3bf1245679184, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5977320889700401594}
   m_SourcePrefab: {fileID: 100100000, guid: e114c76a9b9edb34cbc3bf1245679184, type: 3}
 --- !u!1 &2348220499408924617 stripped
 GameObject:
@@ -117,3 +120,26 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &5977320889700401594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2348220499408924617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eed4293536609ce4694012d1ac654e25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectData: {fileID: 11400000, guid: 6d4c28b89b2a01d42a7f09f638d55172, type: 2}
+  interactionMark: {fileID: 0}
+  OnInteraction:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInteractionRangeEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInteractionRangeExit:
+    m_PersistentCalls:
+      m_Calls: []

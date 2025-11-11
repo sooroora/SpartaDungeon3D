@@ -10,6 +10,7 @@ public class InGameUIManager : MonoBehaviour
     
     [SerializeField] PlayerConditionUI playerConditionUI;
     [SerializeField] InteractionInfoUI interactionInfoUI;
+    [SerializeField] InventoryUI inventoryUI;
     [SerializeField] GameObject crosshair;
 
     private void Awake()

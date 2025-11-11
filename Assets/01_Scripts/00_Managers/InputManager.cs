@@ -25,7 +25,6 @@ public class InputManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
             RegisterActions();
         }
         else if (instance != this)
@@ -75,6 +74,7 @@ public class InputManager : MonoBehaviour
         playerInput.actions["ToggleCameraPerspective"].started += OnToggleCameraPerspective;
 
         playerInput.actions["Interaction"].started += OnInteraction;
+        playerInput.actions["Inventory"].started += OnInventory;
 
         // playerInputList에 담아두기
         // 많아지면 enum에 넣고 for문으로 바꾸기
@@ -113,11 +113,11 @@ public class InputManager : MonoBehaviour
     {
         if (context.phase == InputActionPhase.Started)
         {
-            playerController.OnDash(true);
+            playerController?.OnDash(true);
         }
         else if (context.phase == InputActionPhase.Canceled)
         {
-            playerController.OnDash(false);
+            playerController?.OnDash(false);
         }
     }
 
@@ -139,9 +139,18 @@ public class InputManager : MonoBehaviour
 
     public void OnToggleCameraPerspective(InputAction.CallbackContext context)
     {
-        cameraController.ToggleCameraPerspective();
+        cameraController?.ToggleCameraPerspective();
     }
 
+    public void OnInventory(InputAction.CallbackContext context)
+    {
+        //if(InGameUIManager.Instance.)
+    }
+    
+    
+    
+    
+    
     public void OpenUI()
     {
         isUIOpen = true;
