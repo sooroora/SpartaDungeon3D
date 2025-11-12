@@ -50,6 +50,11 @@ public class CameraController : MonoBehaviour
 
     public void Awake()
     {
+        
+    }
+
+    public void Start()
+    {
         SetCameraPerspective(true);
     }
 
@@ -64,6 +69,10 @@ public class CameraController : MonoBehaviour
         target = _target;
     }
 
+    /// <summary>
+    /// 3인칭이면 true return
+    /// </summary>
+    /// <returns></returns>
     public bool ToggleCameraPerspective()
     {
         container.transform.localRotation = Quaternion.identity;
@@ -72,12 +81,14 @@ public class CameraController : MonoBehaviour
         {
             isThirdPerson = false;
             containerFirstPersonX.transform.localPosition = firstPersonPosition;
+            InGameUIManager.Instance.ToggleCrosshair( true );
             return true;
         }
         else
         {
             isThirdPerson = true;
             containerFirstPersonX.transform.localPosition = thirdPersonPosition;
+            InGameUIManager.Instance.ToggleCrosshair( false );
             return false;
         }
     }
@@ -88,11 +99,12 @@ public class CameraController : MonoBehaviour
         if (isThirdPerson)
         {
             containerFirstPersonX.transform.localPosition = thirdPersonPosition;
+            InGameUIManager.Instance.ToggleCrosshair( false );
         }
-
         else
         {
             containerFirstPersonX.transform.localPosition = firstPersonPosition;
+            InGameUIManager.Instance.ToggleCrosshair( true );
         }
     }
 

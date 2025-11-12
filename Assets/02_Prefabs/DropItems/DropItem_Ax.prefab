@@ -133,7 +133,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectData: {fileID: 11400000, guid: 93eed58341515144ba51248cc316443e, type: 2}
-  interactionMark: {fileID: 0}
   OnInteraction:
     m_PersistentCalls:
       m_Calls: []
@@ -143,3 +142,4 @@ MonoBehaviour:
   OnInteractionRangeExit:
     m_PersistentCalls:
       m_Calls: []
+  interactionType: 2

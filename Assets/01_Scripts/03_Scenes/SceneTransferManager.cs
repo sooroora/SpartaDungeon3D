@@ -10,7 +10,7 @@ public static class SceneTransferManager
     public static void LoadScene(ESceneName sceneName)
     {
         PlayerPrefs.SetString("NextSceneName", sceneName.ToString());
-        SceneManager.LoadScene("LoadingScene");
+        SceneManager.LoadScene( "LoadingScene" );
     }
 
     /// <summary>

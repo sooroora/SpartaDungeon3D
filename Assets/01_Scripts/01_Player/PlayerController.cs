@@ -195,6 +195,16 @@ public class PlayerController : MonoBehaviour
         isDashing = _isDashing;
     }
 
+    public void OnInteraction()
+    {
+        // 추가 예외처리 생각나는거 있으면 해
+
+        if ( nowFocusInteractable != null )
+        {
+            nowFocusInteractable.Interaction();
+        }
+    }
+
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()

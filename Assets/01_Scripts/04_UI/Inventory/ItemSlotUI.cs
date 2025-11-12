@@ -8,41 +8,63 @@ using UnityEngine.UI;
 
 public class ItemSlotUI : MonoBehaviour
 {
-    [SerializeField] private Image itemIcon;
-    [SerializeField] private TextMeshProUGUI itemName;
-    [SerializeField] Color defaultColor;
-    [SerializeField] Color selectedColor;
+    [ SerializeField ] private Image           itemIcon;
+    [ SerializeField ] private TextMeshProUGUI textItemCount;
+    [ SerializeField ]         Color           defaultColor;
+    [ SerializeField ]         Color           selectedColor;
 
     private Image slotImg;
 
-    public ItemData ItemData => itemData;
-    ItemData itemData;
+    public Item Item => item;
+    Item        item;
 
     private InventoryUI inventoryUI;
-    private Button itemSlotButton;
+    private Button      itemSlotButton;
 
     private bool isSelected = false;
 
     private void Awake()
     {
-        slotImg = GetComponent<Image>();
-        itemSlotButton = GetComponent<Button>();
-        inventoryUI = GetComponentInParent<InventoryUI>();
+        slotImg = GetComponent< Image >();
+        itemSlotButton = GetComponent< Button >();
+        inventoryUI = GetComponentInParent< InventoryUI >();
 
-        itemSlotButton.onClick.AddListener(OnSelect);
+        itemSlotButton.onClick.AddListener( OnSelect );
 
-        if (itemData == null)
+        if ( item == null )
         {
             itemIcon.enabled = false;
-            itemName.text = "";
+            textItemCount.text = "";
         }
 
         OnDeselect();
     }
 
-    public void SetItemData(ItemData _itemData)
+    public void SetItemData( Item _item )
     {
-        itemData = _itemData;
+        if(_item == null) return;
+        
+        item = _item;
+        ItemData data = ItemManager.Instance.GetItemData( item.Name );
+
+        if ( data == null )
+        {
+            itemIcon.enabled = false;
+            textItemCount.text = "";
+            return;
+        }
+        
+        itemIcon.enabled = true;
+        itemIcon.sprite = data.Icon;
+
+        if ( data.CanStack )
+        {
+            textItemCount.text = "";
+        }
+        else
+        {
+            textItemCount.text = item.Count.ToString();
+        }
     }
 
     public void OnSelect()
@@ -50,7 +72,7 @@ public class ItemSlotUI : MonoBehaviour
         isSelected = true;
         slotImg.color = selectedColor;
 
-        inventoryUI.SelectItemSlot(this);
+        inventoryUI.SelectItemSlot( this );
     }
 
     public void OnDeselect()
@@ -58,5 +80,4 @@ public class ItemSlotUI : MonoBehaviour
         isSelected = false;
         slotImg.color = defaultColor;
     }
-
 }

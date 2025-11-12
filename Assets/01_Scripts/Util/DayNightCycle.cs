@@ -13,13 +13,13 @@ public class DayNightCycle : MonoBehaviour
 
     [Header("Sun")]
     public Light sun;
-
     public AnimationCurve sunIntensity;
+    public Color dayAmbientColor;
 
     [Header("Moon")]
     public Light moon;
-
     public AnimationCurve moonIntensity;
+    public Color nightAmbientColor;
 
     // [Header("Other Lighting")]
     // public AnimationCurve lightingIntensityMultiplier;
@@ -48,8 +48,16 @@ public class DayNightCycle : MonoBehaviour
         // 그림자 때문에 로테이션 하긴 해야함!!
         sun.intensity = 1.0f - (skyBoxBlend);
         
+        if (time <= 0.5f)
+        {
+            RenderSettings.ambientLight = Color.Lerp(dayAmbientColor, nightAmbientColor, time / 0.5f);
+        }
+        else 
+        {
+            RenderSettings.ambientLight = Color.Lerp(nightAmbientColor, dayAmbientColor, (time - 0.5f) / 0.5f);
+        }
         
-        //
+        
         // UpdateLighting(sun, sunColor, sunIntensity);
         // UpdateLighting(moon, moonColor, moonIntensity);
         //

@@ -1,38 +1,64 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class InGameUIManager : MonoBehaviour
 {
-    public static InGameUIManager Instance => instance;
+    public static  InGameUIManager Instance => instance;
     private static InGameUIManager instance;
-    
-    [SerializeField] PlayerConditionUI playerConditionUI;
-    [SerializeField] InteractionInfoUI interactionInfoUI;
-    [SerializeField] InventoryUI inventoryUI;
-    [SerializeField] GameObject crosshair;
+
+    [ SerializeField ] PlayerConditionUI playerConditionUI;
+    [ SerializeField ] InteractionInfoUI interactionInfoUI;
+    [ SerializeField ] InventoryUI       inventoryUI;
+    [ SerializeField ] GameObject        crosshair;
+    [ SerializeField ] InteractionMark   interactionMark;
 
     private void Awake()
     {
-        if (instance == null)
+        if ( instance == null )
             instance = this;
     }
 
-    public void ToggleCrosshair(bool state)
+    public void ToggleCrosshair( bool state )
     {
-        crosshair.SetActive(state);
+        crosshair.SetActive( state );
     }
 
-    public void ShowInteractionInfo(BaseObjectData data)
+    public void ShowInteractionInfo( BaseObjectData data )
     {
-        interactionInfoUI.SetInteractionInfo(data.displayName, data.description);
-        interactionInfoUI.gameObject.SetActive(true);
+        interactionInfoUI.SetInteractionInfo( data.DisplayName, data.Description );
+        interactionInfoUI.gameObject.SetActive( true );
     }
 
     public void HideInteractionInfo()
     {
-        interactionInfoUI.gameObject.SetActive(false);
+        interactionInfoUI.gameObject.SetActive( false );
     }
 
+    public bool ToggleInventoryUI()
+    {
+        if ( inventoryUI.gameObject.activeInHierarchy )
+        {
+            inventoryUI.gameObject.SetActive( false );
+            return false;
+        }
+        else
+        {
+            inventoryUI.gameObject.SetActive( true ); 
+            return true;
+        }
+    }
+
+
+    public void ShowInteractionMark( Transform target, InteractionMarkType markType )
+    {
+        interactionMark?.Show( target, markType );
+    }
+
+    public void HideInteractionMark()
+    {
+        interactionMark?.Hide();
+    }
 }

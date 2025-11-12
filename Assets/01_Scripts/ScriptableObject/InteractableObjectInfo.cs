@@ -4,9 +4,10 @@
 public class BaseObjectData : ScriptableObject
 {
     [Header("Info")]
-    public string displayName;
-    public string description;
+    [SerializeField] private string displayName;
+    [SerializeField] private string description;
     
-    // 아이템인지 주울 수 있는지
-    // 타입같은거 설정 필요
+    public string DisplayName => displayName;
+    public string Description => description;
+    
 }

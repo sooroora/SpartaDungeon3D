@@ -18,6 +18,7 @@ public enum ConsumableType
 {
     Hunger,
     Health,
+    Stamina,
     Poison, 
 }
 

@@ -1,5 +1,6 @@
 ﻿public class EquipItem : Item
 {
+    public bool IsEquip=>isEquip;
     public int Atk => atk;
     public int Def => def;
     public int AttackSpeed=>attackspeed;
@@ -11,6 +12,10 @@
     private int def;
     private int attackspeed;
     private int speed;
+    
+    private bool isEquip;
+    
+    
     
     public EquipItem(ItemData itemData) : base(itemData)
     {

@@ -6,59 +6,46 @@ using UnityEngine.Events;
 
 public class InteractableObject : MonoBehaviour, IInteractable
 {
-    [SerializeField] private BaseObjectData objectData;
-    [SerializeField] private GameObject interactionMark;
- 
-    [Header("Interactable Event")]
-    [SerializeField] private UnityEvent OnInteraction;
-    [SerializeField] private UnityEvent OnInteractionRangeEnter;
-    [SerializeField] private UnityEvent OnInteractionRangeExit;
+    [ SerializeField ] protected BaseObjectData objectData;
 
-    private void Awake()
-    {
-        if (interactionMark != null)
-        {
-            interactionMark.SetActive(false);
-            AddOnInteractionRangeEnter(() =>
-            {
-                interactionMark.SetActive(true);
-            });
-            
-            AddOnInteractionRangeExit(() =>
-            {
-                interactionMark.SetActive(false);
-            });
-        }
-    }
+    [ Header( "Interactable Event" ) ]
+    [ SerializeField ] protected UnityEvent OnInteraction;
+    [ SerializeField ] protected UnityEvent OnInteractionRangeEnter;
+    [ SerializeField ] protected UnityEvent OnInteractionRangeExit;
+
+    protected InteractionMarkType interactionType;
+
 
     private void Start()
     {
-        AddOnInteractionRangeEnter(() =>
+        AddOnInteractionRangeEnter( () =>
         {
-            InGameUIManager.Instance?.ShowInteractionInfo(objectData);
-        });
-        AddOnInteractionRangeExit(()=>
+            InGameUIManager.Instance?.ShowInteractionInfo( objectData );
+            InGameUIManager.Instance?.ShowInteractionMark( this.transform, interactionType );
+        } );
+        AddOnInteractionRangeExit( () =>
         {
             InGameUIManager.Instance?.HideInteractionInfo();
-        });
+            InGameUIManager.Instance?.HideInteractionMark();
+        } );
     }
 
-    public void AddOnInteraction(UnityAction action)
+    public virtual void AddOnInteraction( UnityAction action )
     {
-        OnInteraction.AddListener(action);
+        OnInteraction.AddListener( action );
     }
 
-    public void AddOnInteractionRangeEnter(UnityAction action)
+    public virtual void AddOnInteractionRangeEnter( UnityAction action )
     {
-        OnInteractionRangeEnter.AddListener(action);
+        OnInteractionRangeEnter.AddListener( action );
     }
 
-    public void AddOnInteractionRangeExit(UnityAction action)
+    public virtual void AddOnInteractionRangeExit( UnityAction action )
     {
-        OnInteractionRangeExit.AddListener(action);
+        OnInteractionRangeExit.AddListener( action );
     }
-    
-    
+
+
     public virtual void Interaction()
     {
         OnInteraction?.Invoke();

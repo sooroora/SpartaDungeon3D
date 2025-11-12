@@ -28,10 +28,10 @@ public class Item
     public Item(ItemData itemData)
     {
         name = itemData.name;
-        displayName = itemData.displayName;
-        description = itemData.description;
-        canStack = itemData.canStack;
-        maxCount = itemData.maxCountAmount;
+        displayName = itemData.DisplayName;
+        description = itemData.Description;
+        canStack = itemData.CanStack;
+        maxCount = itemData.MaxCountAmount;
     }
 
     public int AddCount(int amount)

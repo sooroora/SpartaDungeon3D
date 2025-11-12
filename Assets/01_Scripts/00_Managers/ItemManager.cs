@@ -7,12 +7,12 @@ public class ItemManager : MonoBehaviour
 {
     [SerializeField] private ItemData[] itemData;
     
-    public ItemManager Instance
+    public static ItemManager Instance
     {
         get => instance;
         set => instance = value;
     }
-    private ItemManager instance;
+    private static ItemManager instance;
 
     private Dictionary<string, ItemData> itemDic;
 
@@ -53,8 +53,8 @@ public class ItemManager : MonoBehaviour
     {
         ItemData itemData = GetItemData(itemName);
         if(itemData == null) return;
-        if(itemData.dropPrefab == null) return;
+        if(itemData.DropPrefab == null) return;
         
-        Instantiate(itemData.dropPrefab, position, Quaternion.identity);
+        Instantiate(itemData.DropPrefab, position, Quaternion.identity);
     }
 }

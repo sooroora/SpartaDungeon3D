@@ -6,18 +6,23 @@ using UnityEngine.Serialization;
 
 public class ItemData : BaseObjectData
 {
-    public Sprite icon;
-    public GameObject dropPrefab;
+    [ SerializeField ] private Sprite     icon;
+    [ SerializeField ] private GameObject dropPrefab;
 
-    [Header("Stacking")]
-    public bool canStack;
-    [FormerlySerializedAs("maxStackAmount")] public int maxCountAmount = 99;
+    [ Header( "Stacking" ) ]
+    [ SerializeField ] private bool canStack;
 
+    [ SerializeField ] private int maxCountAmount = 99;
+
+    public Sprite  Icon => icon;
+    public GameObject DropPrefab => dropPrefab;
+    public bool CanStack => canStack;
+    public int MaxCountAmount => maxCountAmount;
+    
+    
     public virtual Item NewItem()
     {
-        Item newItem = new Item(this);
+        Item newItem = new Item( this );
         return newItem;
     }
-    
-    
 }

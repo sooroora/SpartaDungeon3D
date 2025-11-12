@@ -5,14 +5,6 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [Header("Camera Pivot")]
-    [SerializeField] private Transform cameraPivotFirstPerson;
-
-    [SerializeField] private Transform cameraPivotThirdPerson;
-    public Transform CameraPivotFirstPerson => cameraPivotFirstPerson;
-    public Transform CameraPivotThirdPerson => cameraPivotThirdPerson;
-
-
     private PlayerController controller;
     private PlayerCondition condition;
     private PlayerMotionController motionController;
@@ -24,10 +16,12 @@ public class Player : MonoBehaviour
 
     public Rigidbody Rigidbody => controller.Rigidbody;
 
+    public  Inventory Inventory => inventory;
+    private Inventory inventory;
 
     private void Awake()
     {
-        //CharacterManager.Instance.Player = this;
+        inventory = new Inventory();
         controller = GetComponent<PlayerController>();
         condition = GetComponent<PlayerCondition>();
         motionController = GetComponent<PlayerMotionController>();

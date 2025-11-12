@@ -123,7 +123,7 @@ public class InputManager : MonoBehaviour
 
     public void OnInteraction(InputAction.CallbackContext context)
     {
-        //playerController.
+        playerController.OnInteraction();
     }
 
     ////// Camera
@@ -144,7 +144,14 @@ public class InputManager : MonoBehaviour
 
     public void OnInventory(InputAction.CallbackContext context)
     {
-        //if(InGameUIManager.Instance.)
+        if ( InGameUIManager.Instance.ToggleInventoryUI() )
+        {
+            OpenUI();
+        }
+        else
+        {
+            CloseUI();
+        }
     }
     
     

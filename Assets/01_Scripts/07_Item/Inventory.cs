@@ -2,51 +2,56 @@
 
 public class Inventory
 {
-    public List<Item> Items => items;
-    private List<Item> items;
+    public  List< Item > Items => items;
+    private List< Item > items;
 
     public Inventory()
     {
-        items = new List<Item>();
+        items = new List< Item >();
     }
 
-    public bool AddItem(Item item)
+    public bool AddItem( Item item, out int remainCount )
     {
-        List<Item> findItems = items.FindAll((i) =>
+        List< Item > findItems = items.FindAll( ( i ) =>
         {
-            if (item.Name == i.Name) return true;
+            if ( item.Name == i.Name ) return true;
             return false;
-        });
+        } );
 
-        if (findItems.Count == 0)
+        remainCount = item.Count;
+
+        if ( findItems.Count > 0 )
         {
-            items.Add(item);
-            return true;
-        }
-        else
-        {
-            if (item.CanStack)
+            if ( item.CanStack )
             {
-                for (int i = 0; i < findItems.Count; i++)
+                for ( int i = 0; i < findItems.Count; i++ )
                 {
-                    if (findItems[i].Count < findItems[i].MaxCount)
+                    if ( findItems[ i ].Count < findItems[ i ].MaxCount )
                     {
-                        findItems[i].AddCount(item.Count);
-                        return true;
+                        int originCount   = findItems[ i ].Count;
+                        int nowStackCount = findItems[ i ].AddCount( remainCount );
+                        remainCount = remainCount - ( nowStackCount - originCount );
+
+                        if ( remainCount == 0 )
+                        {
+                            break;
+                        }
                     }
                 }
-            }
-            else
-            {
 
+                if ( remainCount == 0 )
+                    return true;
             }
         }
-        return false;
+
+        if ( items.Count >= GameDefaultSettings.InventoryMaxSlot ) return false;
+
+        items.Add( item );
+        remainCount = 0;
+        return true;
     }
 
-    public void RemoveItem(Item item)
+    public void RemoveItem( Item item )
     {
-
     }
-
 }

@@ -3,5 +3,5 @@
 public class ConsumableEffect
 {
     public ConsumableType consumableType;
-    public float amount;
+    public int amount;
 }
