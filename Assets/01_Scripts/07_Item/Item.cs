@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Item
 {
@@ -25,23 +26,41 @@ public class Item
     private bool canStack;
     private int maxCount;
 
-    public Item(ItemData itemData)
+    public event Action< Item > OnUse;
+
+    public Item( ItemData itemData, int _count = 1 )
     {
         name = itemData.name;
         displayName = itemData.DisplayName;
         description = itemData.Description;
         canStack = itemData.CanStack;
         maxCount = itemData.MaxCountAmount;
+        count = _count;
     }
 
-    public int AddCount(int amount)
+    public int AddCount( int amount )
     {
-        if (canStack == false)
+        if ( canStack == false )
         {
             return amount > 0 ? 0 : 1;
         }
 
-        count += Mathf.Clamp(amount, 0, maxCount);
+        count += Mathf.Clamp( amount, 0, maxCount );
         return count;
+    }
+
+    public void Use( Player player )
+    {
+        if ( count > 0 )
+        {
+            count -= 1;
+            OnUseInternal( player );
+        }
+        
+        OnUse?.Invoke( this );
+    }
+
+    protected virtual void OnUseInternal( Player player )
+    {
     }
 }

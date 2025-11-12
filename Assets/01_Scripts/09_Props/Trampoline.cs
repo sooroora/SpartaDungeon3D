@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Trampoline : MonoBehaviour
@@ -14,4 +10,5 @@ public class Trampoline : MonoBehaviour
             player.Controller.ForceJump(jumpForce);
         }
     }
+
 }

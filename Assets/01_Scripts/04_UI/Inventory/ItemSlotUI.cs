@@ -1,25 +1,22 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ItemSlotUI : MonoBehaviour
 {
-    [ SerializeField ] private Image           itemIcon;
+    [ SerializeField ] private Image itemIcon;
     [ SerializeField ] private TextMeshProUGUI textItemCount;
-    [ SerializeField ]         Color           defaultColor;
-    [ SerializeField ]         Color           selectedColor;
+
+    [ SerializeField ] Color defaultColor;
+    [ SerializeField ] Color selectedColor;
 
     private Image slotImg;
 
     public Item Item => item;
-    Item        item;
+    Item item;
 
     private InventoryUI inventoryUI;
-    private Button      itemSlotButton;
+    private Button itemSlotButton;
 
     private bool isSelected = false;
 
@@ -42,28 +39,32 @@ public class ItemSlotUI : MonoBehaviour
 
     public void SetItemData( Item _item )
     {
-        if(_item == null) return;
-        
         item = _item;
+
+        if ( item == null )
+        {
+            ClearSlot();
+            return;
+        }
+
         ItemData data = ItemManager.Instance.GetItemData( item.Name );
 
         if ( data == null )
         {
-            itemIcon.enabled = false;
-            textItemCount.text = "";
+            ClearSlot();
             return;
         }
-        
+
         itemIcon.enabled = true;
         itemIcon.sprite = data.Icon;
 
         if ( data.CanStack )
         {
-            textItemCount.text = "";
+            textItemCount.text = item.Count.ToString();
         }
         else
         {
-            textItemCount.text = item.Count.ToString();
+            textItemCount.text = "";
         }
     }
 
@@ -79,5 +80,11 @@ public class ItemSlotUI : MonoBehaviour
     {
         isSelected = false;
         slotImg.color = defaultColor;
+    }
+
+    public void ClearSlot()
+    {
+        itemIcon.enabled = false;
+        textItemCount.text = "";
     }
 }

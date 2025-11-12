@@ -23,7 +23,18 @@ public class InventoryItemInfoUI : MonoBehaviour
     private Item nowItem;
     //private ItemData nowItemData;
 
+    public event Action OnItemButtonAction ;
+
     [ SerializeField ] private InventoryItemInfoText[] effectInfoTexts;
+
+    private void Awake()
+    {
+        btnUse.onClick.AddListener( OnClickUseItem );
+        btnEquip.onClick.AddListener( OnClickEquipItem );
+        btnUnequip.onClick.AddListener( OnClickUnequipItem );
+        btnThrow.onClick.AddListener( OnClickThrowItem );
+    }
+    
 
     public void ShowInfo( Item item )
     {
@@ -81,11 +92,48 @@ public class InventoryItemInfoUI : MonoBehaviour
                     }
                 }
             }
+            else
+            {
+                for ( int i = 0; i < effectInfoTexts.Length; ++i )
+                {
+                    effectInfoTexts[i].HideInfoText();
+                }
+            }
         }
     }
 
     public void HideInfo()
     {
         infoPanel.SetActive( false );
+    }
+
+    public void OnClickUseItem()
+    {
+        if ( nowItem == null ) return;
+
+        if ( nowItem is ConsumableItem consumableItem )
+        {
+            consumableItem.Use( GameManager.Instance.Player );
+        }
+        
+        OnItemButtonAction?.Invoke();
+    }
+
+    public void OnClickEquipItem()
+    {
+        if ( nowItem == null ) return;
+        OnItemButtonAction?.Invoke();
+    }
+
+    public void OnClickUnequipItem()
+    {
+        if ( nowItem == null ) return;
+        OnItemButtonAction?.Invoke();
+    }
+
+    public void OnClickThrowItem()
+    {
+        if ( nowItem == null ) return;
+        OnItemButtonAction?.Invoke();
     }
 }

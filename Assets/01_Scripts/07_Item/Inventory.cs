@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class Inventory
 {
-    public  List< Item > Items => items;
+    public List< Item > Items => items;
     private List< Item > items;
+
 
     public Inventory()
     {
@@ -18,6 +21,7 @@ public class Inventory
             return false;
         } );
 
+        item.OnUse += OnItemUse;
         remainCount = item.Count;
 
         if ( findItems.Count > 0 )
@@ -28,7 +32,7 @@ public class Inventory
                 {
                     if ( findItems[ i ].Count < findItems[ i ].MaxCount )
                     {
-                        int originCount   = findItems[ i ].Count;
+                        int originCount = findItems[ i ].Count;
                         int nowStackCount = findItems[ i ].AddCount( remainCount );
                         remainCount = remainCount - ( nowStackCount - originCount );
 
@@ -53,5 +57,19 @@ public class Inventory
 
     public void RemoveItem( Item item )
     {
+        if ( items.Contains( item ) )
+        {
+            item.OnUse -= OnItemUse;
+            items.Remove( item );
+        }
+    }
+
+    void OnItemUse( Item item )
+    {
+        if ( item is ConsumableItem consumableItem )
+        {
+            if ( consumableItem.Count <= 0 )
+                RemoveItem( consumableItem );
+        }
     }
 }

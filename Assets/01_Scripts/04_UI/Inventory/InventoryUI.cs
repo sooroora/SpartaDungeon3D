@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -22,6 +23,8 @@ public class InventoryUI : MonoBehaviour
             itemSlots.Add( spawnedSlot );
             spawnedSlot.transform.SetParent( itemSlotContainer );
         }
+
+        itemInfoUI.OnItemButtonAction += UpdateItemSlots;
     }
 
     private void OnEnable()
@@ -36,7 +39,6 @@ public class InventoryUI : MonoBehaviour
         
         if ( inventory == null ) return;
         
-        
         for ( int i = 0; i < itemSlots.Count; ++i ) // DefaultSettings 에 MaxSlot 
         {
             if ( inventory.Items.Count > i )
@@ -50,8 +52,6 @@ public class InventoryUI : MonoBehaviour
             
             itemSlots[i].OnDeselect();
         }
-        
-        
     }
 
     public void SelectItemSlot( ItemSlotUI slot )
@@ -66,6 +66,30 @@ public class InventoryUI : MonoBehaviour
         if ( slot.Item != null )
         {
             itemInfoUI.ShowInfo( slot.Item );
+        }
+    }
+
+    public void UpdateItemSlots()
+    {
+        Inventory inventory = GameManager.Instance.Player.Inventory;
+        
+        if ( inventory == null ) return;
+        
+        for ( int i = 0; i < itemSlots.Count; ++i ) // DefaultSettings 에 MaxSlot 
+        {
+            if ( inventory.Items.Count > i )
+            {
+                itemSlots[ i ].SetItemData( inventory.Items[ i ] );
+            }
+            else
+            {
+                itemSlots[i].SetItemData(null);
+            }
+        }
+        
+        if ( nowSelectedSlot.Item == null )
+        {
+            itemInfoUI.HideInfo();
         }
     }
 }

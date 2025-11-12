@@ -57,14 +57,19 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IDebuffable
         // }
     }
 
-    public void Heal(float amount)
+    public void AddHealth(float amount)
     {
-        //health.Add(amount);
+        health.Add(amount);
     }
 
-    public void Eat(float amount)
+    public void AddHunger(float amount)
     {
-        //hunger.Add(amount);
+        hunger.Add(amount);
+    }
+
+    public void AddStamina( float amount )
+    {
+        stamina.Add(amount);
     }
 
     public void Dash(float amount)
@@ -87,6 +92,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IDebuffable
 
     public void TakeDebuff(DebuffType debuffType, int amount, float debuffTime, float damageInterval = 1)
     {
+        // target 이 2개 이상일 때도 있으면 좋겠다
         Condition targetCondition = null;
         Action debuffEffectAction = null;
 
@@ -98,6 +104,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IDebuffable
                 break;
             case DebuffType.Poison:
                 targetCondition = health;
+                debuffEffectAction += () => { CameraManager.Instance.CameraEffectController.ShowHitIndicator(); };
                 break;
         }
 

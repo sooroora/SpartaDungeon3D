@@ -23,6 +23,8 @@ public class DropItem : InteractableObject
             }
         }
 
-        Destroy( this.gameObject );
+        // 테스트를 위해 지우지 않기! 당근 쌓기!!
+        //Destroy( this.gameObject );
+        
     }
 }

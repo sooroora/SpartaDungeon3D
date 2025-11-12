@@ -1,0 +1,33 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CharacterVisual : MonoBehaviour
+{
+    [ SerializeField ] private Transform leftHand;
+    [ SerializeField ] private Transform rightHand;
+
+    
+    private GameObject nowEquipItem;
+    
+    public void EquipItem( GameObject equipItem , bool isLeft=false)
+    {
+        if ( isLeft )
+        {
+            equipItem.transform.SetParent(leftHand);
+        }
+        else
+        {
+            equipItem.transform.SetParent(rightHand);
+        }
+        
+        equipItem.transform.localPosition = Vector3.zero;
+        equipItem.transform.localRotation = Quaternion.identity;
+    }
+
+    public void UnEquipItem()
+    {
+        if(nowEquipItem ==null) return;
+        nowEquipItem.SetActive( false );
+    }
+}
