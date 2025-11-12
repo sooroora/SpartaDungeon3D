@@ -3,46 +3,46 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Debuff
+public class DotDamage
 {
     public Coroutine DebuffEffectRoutine => debuffEffectRoutine;
     private Coroutine debuffEffectRoutine;
 
-    public void SetDebuffRoutine(Coroutine debuffCoroutine)
+    public void SetDotDamageRoutine(Coroutine debuffCoroutine)
     {
         debuffEffectRoutine = debuffCoroutine;
     }
 
-    public DebuffType Type => type;
+    public DotDamageType Type => type;
     public Condition Target => target;
     public int Amount => amount;
-    public float Duration => debuffTime;
+    public float Duration => duration;
     public float DamageInterval => damageInterval;
 
-    DebuffType type;
+    DotDamageType type;
     private Condition target;
     private int amount;
-    private float debuffTime;
+    private float duration;
     private float damageInterval;
 
-    private Action debuffAction;
+    private Action dotDamageAction;
 
-    public Debuff(DebuffType _type, Condition _targetCondition, int _amount, float _debuffTime, float _damageInterval,
-        Action _debuffAction = null)
+    public DotDamage(DotDamageType _type, Condition _targetCondition, int _amount, float _duration, float _damageInterval,
+        Action _dotDamageAction = null)
     {
         type = _type;
         target = _targetCondition;
         amount = _amount;
-        debuffTime = _debuffTime;
+        duration = _duration;
         damageInterval = _damageInterval;
 
-        debuffAction = _debuffAction;
+        dotDamageAction = _dotDamageAction;
     }
 
     public void ApplyDebuff()
     {
         target?.Add(-amount);
-        debuffAction?.Invoke();
+        dotDamageAction?.Invoke();
     }
 
 }

@@ -1,7 +1,12 @@
-public enum DebuffType
+public enum DotDamageType
 {
     Burn,
     Poison,
+}
+
+public enum BuffType
+{
+    SpeedUp,
 }
 
 public enum EquipType
@@ -20,5 +25,6 @@ public enum ConsumableType
     Health,
     Stamina,
     Poison, 
+    SpeedUp,
 }
 

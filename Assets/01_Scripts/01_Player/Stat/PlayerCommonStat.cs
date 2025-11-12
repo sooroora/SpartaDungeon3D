@@ -26,7 +26,12 @@ public class PlayerCommonStat : ScriptableObject
         set =>
             maxStamina = value;
     }
+    
+    public float InvincibleTime => invincibleTime;
+    
     [SerializeField] private float maxHealth;
     [SerializeField] private float maxHunger;
     [SerializeField] private float maxStamina;
+    
+    [SerializeField] private float invincibleTime = 2.0f;
 }

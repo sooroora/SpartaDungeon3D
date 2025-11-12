@@ -13,7 +13,7 @@ public class ConsumableItem : Item
         consumable = consumableItemData.Consumables;
     }
 
-    protected override void OnUseInternal( Player player )
+    protected override void UseInternal( Player player )
     {
         for ( int i = 0; i < consumable.Length; i++ )
         {
@@ -29,7 +29,9 @@ public class ConsumableItem : Item
                     player.Condition.AddStamina( consumable[ i ].amount );
                     break;
                 case ConsumableType.Poison :
-                    player.Condition.TakeDebuff( DebuffType.Poison, consumable[ i ].amount, 3.0f, 0.5f );
+                    player.Condition.ApplyDotDamage( DotDamageType.Poison, consumable[ i ].amount, 3.0f, 0.5f );
+                    break;
+                case ConsumableType.SpeedUp:
                     break;
             }
         }

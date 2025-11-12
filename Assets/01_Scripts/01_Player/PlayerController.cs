@@ -1,6 +1,7 @@
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
@@ -9,26 +10,27 @@ public class PlayerController : MonoBehaviour
     /*
      *  SerializeField 들
      */
-    [SerializeField] private PlayerMovingStat movingStat;
-    [SerializeField] private Transform interactionPoint;
+    [ SerializeField ] private PlayerMovingStat movingStat;
+    [ SerializeField ] private Transform interactionPoint;
 
-    [SerializeField] private LayerMask groundLayerMask;
+    [ SerializeField ] private LayerMask groundLayerMask;
+    [ SerializeField ] private LayerMask wallLayerMask;
 
-    [Header("Interaction Range")]
-    public float interactForwardOffset = 2.0f;
+    [ Header( "Interaction Range" ) ]
+    [SerializeField] float interactForwardOffset = 2.0f;
+    [SerializeField] float interactheightOffset = 0.0f;
+    [SerializeField] float interactMaxDistance = 5.0f;
+    [SerializeField] float interactSphereSize = 1.0f;
 
-    public float interactheightOffset = 0.0f;
-    public float interactMaxDistance = 5.0f;
-    public float interactSphereSize = 1.0f;
-
-
+    [ Header( "Wall Check Distance" ) ]
+    [SerializeField] float wallCheckDistance = 0.1f;
     /*
      *
      */
     private Player player;
-
     public Rigidbody Rigidbody => rb;
     Rigidbody rb;
+    private NavMeshAgent agent;
 
 
     /*
@@ -37,24 +39,36 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     private Vector3 camForward;
     private Vector3 playerForward;
+
     bool isDashing;
+    bool isHangWall;
 
     private Vector3 forceMovementPos;
+
 
     /*
      *  인터랙션 관련
      */
+    RaycastHit[] hits;
     IInteractable nowFocusInteractable;
+
+    private RaycastHit wallHit;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
-        player = GetComponent<Player>();
+        rb = GetComponent< Rigidbody >();
+        player = GetComponent< Player >();
+        agent = GetComponent< NavMeshAgent >();
+        agent.enabled = false;
+
+        hits = new RaycastHit[] {};
     }
 
     private void Update()
     {
+        CheckRayHit();
         CheckInteractable();
+        CheckWall();
     }
 
     private void FixedUpdate()
@@ -64,103 +78,118 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
+        //if(wallHit.collider != null) return;
+        
         float nowSpeed = movingStat.Speed;
 
-        if (isDashing &&
-            player.Condition.Stamina.CurrentValue > 0.0f)
+        if ( isDashing &&
+             player.Condition.Stamina.CurrentValue > 0.0f )
         {
-            player.Condition.Dash(Time.deltaTime * 5.0f);
+            player.Condition.Dash( Time.deltaTime * 5.0f );
             nowSpeed = nowSpeed * movingStat.DashMultiplier;
         }
-
-        Vector3 prePos = player.transform.position;
-
-        this.transform.position +=
-            camForward * (moveInput.y * nowSpeed * Time.deltaTime);
+        
+        
+        Vector3 prePos = transform.position;
 
         Vector3 right = Vector3.Cross(Vector3.up, camForward).normalized;
-        this.transform.position +=
-            right * (moveInput.x * nowSpeed * Time.deltaTime);
-
-        Vector3 nowPos = player.transform.position;
-
+        Vector3 moveDir = (camForward * moveInput.y + right * moveInput.x).normalized;
+        //
+        // float dot = Vector3.Dot(playerForward,moveDir);
+        // if ( wallHit.collider != null && dot > 0.85f )
+        // {
+        //     //Debug.Log(dot);
+        //     return;
+        // }
+        
+        
+        transform.position += moveDir * (nowSpeed * Time.deltaTime);
+        
+        Vector3 nowPos = transform.position;
 
         // 움직일때만 바뀌게
-        if (moveInput != Vector2.zero)
+        if ( moveInput != Vector2.zero )
         {
-            playerForward = Vector3.Normalize(nowPos - prePos);
-            player.UpdateMovingForward(playerForward);
+            playerForward = Vector3.Normalize( nowPos - prePos );
+            player.UpdateMovingForward( playerForward );
         }
     }
-    
-    public void ForceMove(Vector3 movingPos)
+
+    public void ForceMove( Vector3 movingPos )
     {
         this.transform.position +=
             forceMovementPos;
     }
 
 
-    public void UpdateForward(Vector3 _forward)
+    public void UpdateForward( Vector3 _forward )
     {
         camForward = _forward;
     }
 
-    public void UpdateMoveInput(Vector2 input)
+    public void UpdateMoveInput( Vector2 input )
     {
         moveInput = input;
     }
 
     bool IsGrounded()
     {
-        Ray[] rays = new Ray[4]
+        Ray[] rays = new Ray[ 4 ]
         {
-            new Ray(transform.position + (transform.forward * 0.2f) + (transform.up * 0.01f), Vector3.down),
-            new Ray(transform.position + (-transform.forward * 0.2f) + (transform.up * 0.01f), Vector3.down),
-            new Ray(transform.position + (transform.right * 0.2f) + (transform.up * 0.01f), Vector3.down),
-            new Ray(transform.position + (-transform.right * 0.2f) + (transform.up * 0.01f), Vector3.down)
+            new Ray( transform.position + ( transform.forward * 0.2f ) + ( transform.up * 0.01f ), Vector3.down ),
+            new Ray( transform.position + ( -transform.forward * 0.2f ) + ( transform.up * 0.01f ), Vector3.down ),
+            new Ray( transform.position + ( transform.right * 0.2f ) + ( transform.up * 0.01f ), Vector3.down ),
+            new Ray( transform.position + ( -transform.right * 0.2f ) + ( transform.up * 0.01f ), Vector3.down )
         };
 
-        for (int i = 0; i < rays.Length; i++)
+        for ( int i = 0; i < rays.Length; i++ )
         {
-            if (Physics.Raycast(rays[i], 0.1f, groundLayerMask))
+            if ( Physics.Raycast( rays[ i ], 0.1f, groundLayerMask ) )
             {
                 return true;
             }
         }
+
         return false;
     }
 
-    public void CheckInteractable()
+    public void CheckRayHit()
     {
-        RaycastHit[] hits;
-        
-        if (CameraManager.Instance.CameraController.IsThirdPerson)
+        if ( CameraManager.Instance.CameraController.IsThirdPerson )
         {
-            Vector3 startPoint = interactionPoint.position + (playerForward * interactForwardOffset) + (Vector3.up * interactheightOffset);
+            Vector3 startPoint = interactionPoint.position + ( playerForward * interactForwardOffset ) + ( Vector3.up * interactheightOffset );
 
             // interactable 이 layer 가 무조건 Interactable 이지는 않아서 all 로 변경해서 찾기
-             hits = Physics.SphereCastAll(startPoint, interactSphereSize, playerForward, interactMaxDistance);
-           
+            hits = Physics.SphereCastAll( startPoint, interactSphereSize, playerForward, interactMaxDistance );
         }
         else
         {
-            Ray ray = CameraManager.Instance.Cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
-            hits = Physics.RaycastAll(ray,interactMaxDistance);
+            Ray ray = CameraManager.Instance.Cam.ScreenPointToRay( new Vector3( Screen.width / 2, Screen.height / 2, 0 ) );
+            hits = Physics.RaycastAll( ray, interactMaxDistance );
         }
-        
-        if (hits.Length > 0)
+
+        if ( hits.Length > 0 )
         {
-            Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
-            for (int i = 0; i < hits.Length; i++)
+            Array.Sort( hits, ( a, b ) => a.distance.CompareTo( b.distance ) );
+        }
+    }
+
+
+    public void CheckInteractable()
+    {
+        if ( hits.Length > 0 )
+        {
+            for ( int i = 0; i < hits.Length; i++ )
             {
-                if (hits[i].collider.TryGetComponent<IInteractable>(out IInteractable interactable))
+                if ( hits[ i ].collider.TryGetComponent< IInteractable >( out IInteractable interactable ) )
                 {
-                    if (nowFocusInteractable != interactable)
+                    if ( nowFocusInteractable != interactable )
                     {
                         nowFocusInteractable?.InteractionRangeExit();
                         nowFocusInteractable = interactable;
                         nowFocusInteractable?.InteractionRangeEnter();
                     }
+
                     return;
                 }
             }
@@ -168,29 +197,53 @@ public class PlayerController : MonoBehaviour
 
         nowFocusInteractable?.InteractionRangeExit();
         nowFocusInteractable = null;
-
-    } 
- 
-
-    public void ForceJump(float jumpForce)
-    {
-        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 
-   
+
+    public void CheckWall()
+    {
+        if ( hits.Length > 0 )
+        {
+            ClimbableWall hitWall;
+            for ( int i = 0; i < hits.Length; i++ )
+            {
+                if ( hits[ i ].collider.TryGetComponent( out ClimbableWall wall ) )
+                {
+                    Debug.Log(hits[i].distance);
+
+                    return;
+                }
+            }
+        }
+        // Physics.SphereCast( interactionPoint.position, wallCheckDistance, playerForward, out wallHit, wallCheckDistance, wallLayerMask );
+        // //Physics.Linecast( interactionPoint.position, interactionPoint.position + playerForward * wallCheckDistance, out wallHit, wallLayerMask );
+        //
+        // if ( wallHit.collider != null )
+        // {
+        //     Debug.Log( wallHit.distance );
+        //     
+        // }
+    }
+
+
+    public void ForceJump( float jumpForce )
+    {
+        rb.AddForce( Vector3.up * jumpForce, ForceMode.Impulse );
+    }
+
 
     /*
      *  Receive Input
      */
     public void OnJump()
     {
-        if (IsGrounded())
+        if ( IsGrounded() )
         {
-            rb.AddForce(Vector3.up * movingStat.JumpForce, ForceMode.Impulse);
+            rb.AddForce( Vector3.up * movingStat.JumpForce, ForceMode.Impulse );
         }
     }
 
-    public void OnDash(bool _isDashing)
+    public void OnDash( bool _isDashing )
     {
         isDashing = _isDashing;
     }
@@ -209,19 +262,21 @@ public class PlayerController : MonoBehaviour
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
-        if (interactionPoint == null) return;
+        if ( interactionPoint == null ) return;
 
         Gizmos.color = Color.red;
 
-        Vector3 startPoint = interactionPoint.position + (playerForward * interactForwardOffset) + (Vector3.up * interactheightOffset);
-        Gizmos.DrawWireSphere(startPoint, interactSphereSize);
-        Gizmos.DrawWireSphere(startPoint + playerForward * interactMaxDistance, interactSphereSize);
+        Vector3 startPoint = interactionPoint.position + ( playerForward * interactForwardOffset ) + ( Vector3.up * interactheightOffset );
+        Gizmos.DrawWireSphere( startPoint, interactSphereSize );
+        Gizmos.DrawWireSphere( startPoint + playerForward * interactMaxDistance, interactSphereSize );
         Gizmos.color = Color.magenta;
         Gizmos.DrawLine(
             startPoint,
-            startPoint + playerForward * interactMaxDistance);
-
-
+            startPoint + playerForward * interactMaxDistance );
+        
+        
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(interactionPoint.position, interactionPoint.position + playerForward * wallCheckDistance );
     }
 #endif
 }

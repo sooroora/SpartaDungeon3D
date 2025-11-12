@@ -54,13 +54,13 @@ public class Item
         if ( count > 0 )
         {
             count -= 1;
-            OnUseInternal( player );
+            UseInternal( player );
         }
         
         OnUse?.Invoke( this );
     }
 
-    protected virtual void OnUseInternal( Player player )
+    protected virtual void UseInternal( Player player )
     {
     }
 }

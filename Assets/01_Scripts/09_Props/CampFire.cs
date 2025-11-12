@@ -7,14 +7,14 @@ using UnityEngine;
 public class CampFire : InteractableObject
 {
     [Header("CampFire")]
-    [SerializeField] DebuffType debuffType;
+    [SerializeField] DotDamageType dotDamageType;
     [SerializeField] private int burnDamage;
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out IDebuffable debuffable))
+        if (other.TryGetComponent(out IDotDamage debuffable))
         {
-            debuffable.TakeDebuff(debuffType, burnDamage, 5.0f, 1.0f);
+            debuffable.ApplyDotDamage(dotDamageType, burnDamage, 5.0f, 1.0f);
         }
     }
 

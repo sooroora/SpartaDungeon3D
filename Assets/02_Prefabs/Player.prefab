@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 4350483430006992499}
   - component: {fileID: 9090513250551125222}
   - component: {fileID: 8783599171157068817}
+  - component: {fileID: 3439352961542461801}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -68,7 +69,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7617598853556893679}
-  - {fileID: 1887416148764950362}
   - {fileID: 3064175988486511478}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -134,8 +134,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c980daa4f4641bc4893288f969c2c9be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraPivotFirstPerson: {fileID: 7617598853556893679}
-  cameraPivotThirdPerson: {fileID: 1887416148764950362}
 --- !u!114 &4350483430006992499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,7 +150,10 @@ MonoBehaviour:
   interactionPoint: {fileID: 7617598853556893679}
   groundLayerMask:
     serializedVersion: 2
-    m_Bits: 183
+    m_Bits: 695
+  wallLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
   interactForwardOffset: 0.5
   interactheightOffset: -0.7
   interactMaxDistance: 2
@@ -184,6 +185,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modelRoot: {fileID: 3064175988486511478}
+--- !u!114 &3439352961542461801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4113092990180134246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef484f96a5bd09a4fb3294212868d222, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftHand: {fileID: 2740336512463400673}
+  rightHand: {fileID: 8173252203298304202}
 --- !u!1 &6859176368167513204
 GameObject:
   m_ObjectHideFlags: 0
@@ -194,7 +209,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7617598853556893679}
   m_Layer: 6
-  m_Name: CameraPivot_first
+  m_Name: InteractionPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -210,37 +225,6 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.24442995, y: 1.59, z: 0.65}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6812914249198253838}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8196822052032259898
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1887416148764950362}
-  m_Layer: 6
-  m_Name: CameraPivot_third
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1887416148764950362
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8196822052032259898}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.24442995, y: 2.9, z: -3.32}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -586,6 +570,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1427477857447437629}
   m_SourcePrefab: {fileID: 100100000, guid: 996f862059bd0194c8fe931f79434634, type: 3}
+--- !u!4 &2740336512463400673 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7214371169738337839, guid: 996f862059bd0194c8fe931f79434634, type: 3}
+  m_PrefabInstance: {fileID: 4762901650807144654}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5013492288476030757 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 996f862059bd0194c8fe931f79434634, type: 3}
@@ -617,3 +606,8 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!4 &8173252203298304202 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -5515783359193845756, guid: 996f862059bd0194c8fe931f79434634, type: 3}
+  m_PrefabInstance: {fileID: 4762901650807144654}
+  m_PrefabAsset: {fileID: 0}

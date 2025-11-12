@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class Laser : MonoBehaviour
 {
-    [SerializeField] int damage;
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.TryGetComponent(out Player player))
-        {
-            player.Condition.TakeDamage(damage);
-        }
-    }
+    // 어머 ray로 해야됐구나.,.
+    // void OnTriggerEnter(Collider other)
+    // {
+    //     if (other.TryGetComponent(out Player player))
+    //     {
+    //         player.Condition.TakeDamage(damage);
+    //     }
+    // }
 }

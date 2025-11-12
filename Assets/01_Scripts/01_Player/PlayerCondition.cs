@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCondition : MonoBehaviour, IDamagable, IDebuffable
+public class PlayerCondition : MonoBehaviour, IDamagable, IDotDamage
 {
     [SerializeField] private PlayerCommonStat commonStat;
     PlayerConditionUI playerConditionUI;
@@ -12,6 +12,8 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IDebuffable
     public Condition Hunger => hunger;
     public Condition Stamina => stamina;
 
+    public bool IsInvincible => isInvincible;
+    bool isInvincible =  false;
     Condition health;
     Condition hunger;
     Condition stamina;
@@ -20,19 +22,23 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IDebuffable
     public float noHungerHealthDecay;
     public event Action onTakeDamage;
 
+
+    private WaitForSeconds invincibleWait;
+    Coroutine invincibleRoutine;
     Coroutine healthCoroutine;
     Coroutine hungerPassiveCoroutine;
     Coroutine staminaPassiveCoroutine;
-
-
-    List<Debuff> debuffs = new List<Debuff>();
+     
+    
+    List<DotDamage> debuffs = new List<DotDamage>();
 
     private void Awake()
     {
         health = new Condition(commonStat.MaxHealth, commonStat.MaxHealth, 0);
         stamina = new Condition(commonStat.MaxStamina, commonStat.MaxStamina, 1.0f);
         hunger = new Condition(commonStat.MaxHunger, commonStat.MaxHunger, -0.2f);
-
+        
+        invincibleWait = new WaitForSeconds(commonStat.InvincibleTime);
 
     }
 
@@ -86,38 +92,45 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IDebuffable
 
     public void TakeDamage(int damage)
     {
+        if ( isInvincible ) return;
         CameraManager.Instance.CameraEffectController.ShowHitIndicator();
         health.Add(-damage);
+        SetInvincible();  
     }
 
-    public void TakeDebuff(DebuffType debuffType, int amount, float debuffTime, float damageInterval = 1)
+    public void ApplyDotDamage(DotDamageType dotDamageType, int amount, float durataion, float damageInterval = 1)
     {
         // target 이 2개 이상일 때도 있으면 좋겠다
         Condition targetCondition = null;
         Action debuffEffectAction = null;
 
-        switch (debuffType)
+        switch (dotDamageType)
         {
-            case DebuffType.Burn:
+            case DotDamageType.Burn:
                 targetCondition = health;
                 debuffEffectAction += () => { CameraManager.Instance.CameraEffectController.ShowHitIndicator(); };
                 break;
-            case DebuffType.Poison:
+            case DotDamageType.Poison:
                 targetCondition = health;
                 debuffEffectAction += () => { CameraManager.Instance.CameraEffectController.ShowHitIndicator(); };
                 break;
         }
 
-        Debuff newDebuff = new Debuff(debuffType, targetCondition, amount, debuffTime, damageInterval, debuffEffectAction);
-        debuffs.Add(newDebuff);
-        newDebuff.SetDebuffRoutine(StartCoroutine(DebuffRoutine(newDebuff)));
+        DotDamage newDotDamage = new DotDamage(dotDamageType, targetCondition, amount, durataion, damageInterval, debuffEffectAction);
+        debuffs.Add(newDotDamage);
+        newDotDamage.SetDotDamageRoutine(StartCoroutine(DebuffRoutine(newDotDamage)));
     }
 
-    public void RemoveDebuff(Debuff debuff)
+    public void TakeBuff( BuffType buffType, int amount, float duration )
     {
-        if (debuff.DebuffEffectRoutine != null)
-            StopCoroutine(debuff.DebuffEffectRoutine);
-        debuffs.Remove(debuff);
+        
+    }
+
+    public void RemoveDotDamage(DotDamage dotDamage)
+    {
+        if (dotDamage.DebuffEffectRoutine != null)
+            StopCoroutine(dotDamage.DebuffEffectRoutine);
+        debuffs.Remove(dotDamage);
     }
 
     IEnumerator PassiveConditionRoutine(Condition targetCondition, float _time)
@@ -139,19 +152,36 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IDebuffable
         }
     }
 
-    IEnumerator DebuffRoutine(Debuff debuff)
+    IEnumerator DebuffRoutine(DotDamage dotDamage)
     {
-        float duration = debuff.Duration;
-        WaitForSeconds wait = new WaitForSeconds(debuff.DamageInterval);
+        float duration = dotDamage.Duration;
+        WaitForSeconds wait = new WaitForSeconds(dotDamage.DamageInterval);
 
         while (duration > 0)
         {
-            duration -= debuff.DamageInterval;
-            debuff.ApplyDebuff();
+            duration -= dotDamage.DamageInterval;
+            dotDamage.ApplyDebuff();
             yield return wait;
         }
 
-        debuffs.Remove(debuff);
+        debuffs.Remove(dotDamage);
+    }
+
+
+    void SetInvincible()
+    {
+        if(invincibleRoutine != null)
+            return;
+        invincibleRoutine = StartCoroutine(InvincibleRoutine());
+            
+    }
+
+    IEnumerator InvincibleRoutine()
+    {
+        isInvincible = true;
+        yield return invincibleWait;
+        isInvincible = false;
+        invincibleRoutine = null;
     }
 
 
