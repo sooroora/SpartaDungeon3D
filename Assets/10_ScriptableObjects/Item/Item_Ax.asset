@@ -17,10 +17,10 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 06e8d836c76eb494db7ab3784ffcb0eb, type: 3}
   dropPrefab: {fileID: 1102743055092630047, guid: 2dc802bb5e1e20b4d8a1d84622033a1a, type: 3}
   canStack: 0
-  maxStackAmount: 99
-  equipPrefab: {fileID: 0}
-  equipmentType: 4
+  maxCountAmount: 99
+  equipPrefab: {fileID: 919132149155446097, guid: 9fd1f71395a5a1c4d93964641f775291, type: 3}
+  equipType: 4
   atk: 5
   def: 0
-  Attackspeed: 0
+  attackspeed: 0
   speed: 0

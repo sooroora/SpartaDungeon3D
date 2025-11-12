@@ -83,8 +83,17 @@ public class InventoryItemInfoUI : MonoBehaviour
                 {
                     if ( consumable.Length > i )
                     {
-                        effectInfoTexts[ i ].ShowInfoText( GameDefaultSettings.ConsumableText[ consumableItem.Consumable[ i ].consumableType ],
-                                                           consumableItem.Consumable[ i ].amount.ToString() );
+                        try
+                        {
+                            //키 없을 수도 있음~~
+                            // 템창에 독있는건 안보여줄거임
+                            effectInfoTexts[ i ].ShowInfoText( GameDefaultSettings.ConsumableText[ consumableItem.Consumable[ i ].consumableType ],
+                                                               consumableItem.Consumable[ i ].amount.ToString() );
+                        }
+                        catch
+                        {
+                            effectInfoTexts[ i ].HideInfoText();    
+                        }
                     }
                     else
                     {
@@ -122,6 +131,12 @@ public class InventoryItemInfoUI : MonoBehaviour
     public void OnClickEquipItem()
     {
         if ( nowItem == null ) return;
+
+        if ( nowItem is EquipItem equipItem )
+        {
+            equipItem.Equip( GameManager.Instance.Player );
+        }
+        
         OnItemButtonAction?.Invoke();
     }
 
@@ -129,6 +144,11 @@ public class InventoryItemInfoUI : MonoBehaviour
     {
         if ( nowItem == null ) return;
         OnItemButtonAction?.Invoke();
+        
+        if ( nowItem is EquipItem equipItem )
+        {
+            equipItem.Equip( GameManager.Instance.Player );
+        }
     }
 
     public void OnClickThrowItem()

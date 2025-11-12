@@ -10,24 +10,34 @@ public class CharacterVisual : MonoBehaviour
     
     private GameObject nowEquipItem;
     
-    public void EquipItem( GameObject equipItem , bool isLeft=false)
+    public void EquipItem( string itemName , bool isLeft=false)
     {
-        if ( isLeft )
+        ItemData itemData = ItemManager.Instance.GetItemData( itemName );
+        if ( itemData is EquipItemData equipItemData )
         {
-            equipItem.transform.SetParent(leftHand);
-        }
-        else
-        {
-            equipItem.transform.SetParent(rightHand);
+            if ( equipItemData.equipPrefab == null ) return;
+            
+            GameObject equipItem = Instantiate(equipItemData.equipPrefab);
+            
+            
+            if ( isLeft )
+            {
+                equipItem.transform.SetParent(leftHand);
+            }
+            else
+            {
+                equipItem.transform.SetParent(rightHand);
+            }
+        
+            equipItem.transform.localPosition = Vector3.zero;
+            equipItem.transform.localRotation = Quaternion.identity;    
         }
         
-        equipItem.transform.localPosition = Vector3.zero;
-        equipItem.transform.localRotation = Quaternion.identity;
     }
 
     public void UnEquipItem()
     {
         if(nowEquipItem ==null) return;
-        nowEquipItem.SetActive( false );
+        Destroy( nowEquipItem );
     }
 }

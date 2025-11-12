@@ -8,11 +8,13 @@ public class Player : MonoBehaviour
     private PlayerController controller;
     private PlayerCondition condition;
     private PlayerMotionController motionController;
+    private CharacterVisual visual;
 
 
     public PlayerController Controller => controller;
     public PlayerCondition Condition => condition;
     public PlayerMotionController MotionController => motionController;
+    public CharacterVisual Visual => visual;
 
     public Rigidbody Rigidbody => controller.Rigidbody;
 
@@ -25,6 +27,7 @@ public class Player : MonoBehaviour
         controller = GetComponent<PlayerController>();
         condition = GetComponent<PlayerCondition>();
         motionController = GetComponent<PlayerMotionController>();
+        visual = GetComponent<CharacterVisual>();
     }
 
     private void Start()

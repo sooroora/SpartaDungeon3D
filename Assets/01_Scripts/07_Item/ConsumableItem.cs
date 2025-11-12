@@ -29,9 +29,11 @@ public class ConsumableItem : Item
                     player.Condition.AddStamina( consumable[ i ].amount );
                     break;
                 case ConsumableType.Poison :
+                    // 실제 구현 안 함
                     player.Condition.ApplyDotDamage( DotDamageType.Poison, consumable[ i ].amount, 3.0f, 0.5f );
                     break;
                 case ConsumableType.SpeedUp:
+                    player.Condition.TakeBuff( BuffType.SpeedUp, consumable[ i ].amount, consumable[ i ].duration );
                     break;
             }
         }

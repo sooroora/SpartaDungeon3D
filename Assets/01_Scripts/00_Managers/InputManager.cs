@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public class InputManager : MonoBehaviour
 {
     private static InputManager instance;
+
     public static InputManager Instance
     {
         get => instance;
@@ -18,18 +19,18 @@ public class InputManager : MonoBehaviour
 
     public bool IsUIOpen => isUIOpen;
     bool isUIOpen = false;
-    List<InputAction> playerInputList;
+    List< InputAction > playerInputList;
 
     private void Awake()
     {
-        if (instance == null)
+        if ( instance == null )
         {
             instance = this;
             RegisterActions();
         }
-        else if (instance != this)
+        else if ( instance != this )
         {
-            Destroy(gameObject);
+            Destroy( gameObject );
         }
     }
 
@@ -42,107 +43,146 @@ public class InputManager : MonoBehaviour
     {
         //test
 
-        if (Input.GetKeyDown(KeyCode.F1))
+        if ( Input.GetKeyDown( KeyCode.F1 ) )
         {
             OpenUI();
         }
-        else if (Input.GetKeyDown(KeyCode.F2))
+        else if ( Input.GetKeyDown( KeyCode.F2 ) )
         {
             CloseUI();
         }
-
     }
 
     void RegisterActions()
     {
-        playerInput = GetComponent<PlayerInput>();
-        playerInputList = new List<InputAction>();
+        playerInput = GetComponent< PlayerInput >();
+        playerInputList = new List< InputAction >();
 
-        playerInput.actions["Move"].started += OnMove;
-        playerInput.actions["Move"].performed += OnMove;
-        playerInput.actions["Move"].canceled += OnMove;
+        playerInput.actions[ "Move" ].started += OnMove;
+        playerInput.actions[ "Move" ].performed += OnMove;
+        playerInput.actions[ "Move" ].canceled += OnMove;
 
-        playerInput.actions["Look"].started += OnLook;
-        playerInput.actions["Look"].performed += OnLook;
-        playerInput.actions["Look"].canceled += OnLook;
+        playerInput.actions[ "Look" ].started += OnLook;
+        playerInput.actions[ "Look" ].performed += OnLook;
+        playerInput.actions[ "Look" ].canceled += OnLook;
 
-        playerInput.actions["Jump"].started += OnJump;
+        playerInput.actions[ "Jump" ].started += OnJump;
 
-        playerInput.actions["Dash"].started += OnDash;
-        playerInput.actions["Dash"].canceled += OnDash;
+        playerInput.actions[ "Dash" ].started += OnDash;
+        playerInput.actions[ "Dash" ].canceled += OnDash;
 
-        playerInput.actions["ToggleCameraPerspective"].started += OnToggleCameraPerspective;
+        playerInput.actions[ "ToggleCameraPerspective" ].started += OnToggleCameraPerspective;
 
-        playerInput.actions["Interaction"].started += OnInteraction;
-        playerInput.actions["Inventory"].started += OnInventory;
+        playerInput.actions[ "Interaction" ].started += OnInteraction;
+        playerInput.actions[ "Inventory" ].started += OnInventory;
+
+        playerInput.actions[ "UseMouse" ].started += OnUseMouse;
+        playerInput.actions[ "UseMouse" ].canceled += OnUseMouse;
+        
+        playerInput.actions["SelectTarget"].started += OnSelectTarget;
 
         // playerInputList에 담아두기
         // 많아지면 enum에 넣고 for문으로 바꾸기
-        playerInputList.Add(playerInput.actions["Move"]);
-        playerInputList.Add(playerInput.actions["Look"]);
-        playerInputList.Add(playerInput.actions["Jump"]);
-        playerInputList.Add(playerInput.actions["Dash"]);
-        playerInputList.Add(playerInput.actions["ToggleCameraPerspective"]);
-        playerInputList.Add(playerInput.actions["Interaction"]);
+        playerInputList.Add( playerInput.actions[ "Move" ] );
+        playerInputList.Add( playerInput.actions[ "Look" ] );
+        playerInputList.Add( playerInput.actions[ "Jump" ] );
+        playerInputList.Add( playerInput.actions[ "Dash" ] );
+        playerInputList.Add( playerInput.actions[ "ToggleCameraPerspective" ] );
+        playerInputList.Add( playerInput.actions[ "Interaction" ] );
     }
 
-    public void SetPlayerController(PlayerController _playerController)
+    public void SetPlayerController( PlayerController _playerController )
     {
         playerController = _playerController;
-
     }
 
-    public void SetCameraController(CameraController _cameraController)
+    public void SetCameraController( CameraController _cameraController )
     {
         cameraController = _cameraController;
     }
 
 
     ////// Player
-    public void OnMove(InputAction.CallbackContext context)
+    public void OnMove( InputAction.CallbackContext context )
     {
-        playerController?.UpdateMoveInput(context.ReadValue<Vector2>());
+        playerController?.UpdateMoveInput( context.ReadValue< Vector2 >() );
     }
 
-    public void OnJump(InputAction.CallbackContext context)
+    public void OnJump( InputAction.CallbackContext context )
     {
         playerController?.OnJump();
     }
 
-    public void OnDash(InputAction.CallbackContext context)
+    public void OnDash( InputAction.CallbackContext context )
     {
-        if (context.phase == InputActionPhase.Started)
+        if ( context.phase == InputActionPhase.Started )
         {
-            playerController?.OnDash(true);
+            playerController?.OnDash( true );
         }
-        else if (context.phase == InputActionPhase.Canceled)
+        else if ( context.phase == InputActionPhase.Canceled )
         {
-            playerController?.OnDash(false);
+            playerController?.OnDash( false );
         }
     }
 
-    public void OnInteraction(InputAction.CallbackContext context)
+    public void OnInteraction( InputAction.CallbackContext context )
     {
         playerController.OnInteraction();
     }
 
-    ////// Camera
-    public void OnLook(InputAction.CallbackContext context)
+    private bool isUsingMouse = false;
+
+    public void OnUseMouse( InputAction.CallbackContext context )
     {
-        Vector2 mouseDelta = context.ReadValue<Vector2>();
-        Vector3 forward = cameraController?.UpdateLookInput(mouseDelta) ?? Vector3.forward;
+        if ( context.phase == InputActionPhase.Started )
+        {
+            Cursor.lockState = CursorLockMode.None;
+            playerInput.actions[ "Look" ].Disable();
+            isUsingMouse = true;
+        }
+        else if ( context.phase == InputActionPhase.Canceled )
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            playerInput.actions[ "Look" ].Enable();
+            isUsingMouse = false;
+        }
+    }
+
+    public void OnSelectTarget( InputAction.CallbackContext context )
+    {
+        if ( isUsingMouse == true
+          && isUIOpen == false )
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                playerController.NavMeshMove(hit.point);
+                //Debug.Log("어댜" + hit.point);
+            }
+            
+        }
+    }
+
+
+    ////// Camera
+    public void OnLook( InputAction.CallbackContext context )
+    {
+        Vector2 mouseDelta = context.ReadValue< Vector2 >();
+        Vector3 forward = cameraController?.UpdateLookInput( mouseDelta ) ?? Vector3.forward;
 
         // Vector3 forward = Quaternion.Euler(0, cameraController.ContainerY.localEulerAngles.y, 0)
         //                   * Vector3.forward;
-        playerController?.UpdateForward(forward);
+        playerController?.UpdateForward( forward );
     }
 
-    public void OnToggleCameraPerspective(InputAction.CallbackContext context)
+    public void OnToggleCameraPerspective( InputAction.CallbackContext context )
     {
         cameraController?.ToggleCameraPerspective();
     }
 
-    public void OnInventory(InputAction.CallbackContext context)
+    public void OnInventory( InputAction.CallbackContext context )
     {
         if ( InGameUIManager.Instance.ToggleInventoryUI() )
         {
@@ -153,16 +193,13 @@ public class InputManager : MonoBehaviour
             CloseUI();
         }
     }
-    
-    
-    
-    
-    
+
+
     public void OpenUI()
     {
         isUIOpen = true;
         Cursor.lockState = CursorLockMode.None;
-        foreach (InputAction action in playerInputList)
+        foreach ( InputAction action in playerInputList )
         {
             action.Disable();
         }
@@ -172,11 +209,9 @@ public class InputManager : MonoBehaviour
     {
         isUIOpen = false;
         Cursor.lockState = CursorLockMode.Locked;
-        foreach (InputAction action in playerInputList)
+        foreach ( InputAction action in playerInputList )
         {
             action.Enable();
         }
     }
-
-
 }

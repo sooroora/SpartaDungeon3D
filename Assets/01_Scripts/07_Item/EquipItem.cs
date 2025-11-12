@@ -16,7 +16,6 @@
     private bool isEquip;
     
     
-    
     public EquipItem(ItemData itemData) : base(itemData)
     {
         EquipItemData equipItem = itemData as EquipItemData;
@@ -28,5 +27,17 @@
         attackspeed = equipItem.attackspeed;
         speed = equipItem.speed;
         type = equipItem.equipType;
+    }
+
+    public void Equip(Player player)
+    {
+        isEquip = true;
+        player.Visual.EquipItem( Name );
+    }
+
+    public void Unequip( Player player )
+    {
+        isEquip = false;
+        player.Visual.UnEquipItem();
     }
 }

@@ -60,8 +60,9 @@ public class PlayerController : MonoBehaviour
         player = GetComponent< Player >();
         agent = GetComponent< NavMeshAgent >();
         agent.enabled = false;
-
         hits = new RaycastHit[] {};
+
+        agent.speed = movingStat.Speed;
     }
 
     private void Update()
@@ -73,7 +74,19 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        
         Move();
+        
+        
+        if ( agent.enabled )
+        {
+            if (  Vector3.Distance( this.transform.position, agent.destination ) < 0.05f )
+            {
+                agent.enabled = false;
+            }
+        }
+        
+        
     }
 
     void Move()
@@ -82,19 +95,22 @@ public class PlayerController : MonoBehaviour
         
         float nowSpeed = movingStat.Speed;
 
+        nowSpeed = nowSpeed * player.Condition.GetSpeedBuffValue();
+        
+        
         if ( isDashing &&
              player.Condition.Stamina.CurrentValue > 0.0f )
         {
             player.Condition.Dash( Time.deltaTime * 5.0f );
             nowSpeed = nowSpeed * movingStat.DashMultiplier;
         }
-        
-        
-        Vector3 prePos = transform.position;
+
+
+        Vector3 prePos = rb.position;//transform.position;
 
         Vector3 right = Vector3.Cross(Vector3.up, camForward).normalized;
         Vector3 moveDir = (camForward * moveInput.y + right * moveInput.x).normalized;
-        //
+        
         // float dot = Vector3.Dot(playerForward,moveDir);
         // if ( wallHit.collider != null && dot > 0.85f )
         // {
@@ -102,16 +118,18 @@ public class PlayerController : MonoBehaviour
         //     return;
         // }
         
+        // Vector3 nextPos = rb.position + moveDir * (nowSpeed * Time.deltaTime);
+        // rb.MovePosition(nextPos);
         
         transform.position += moveDir * (nowSpeed * Time.deltaTime);
-        
-        Vector3 nowPos = transform.position;
+        Vector3 nextPos = transform.position;
 
         // 움직일때만 바뀌게
         if ( moveInput != Vector2.zero )
         {
-            playerForward = Vector3.Normalize( nowPos - prePos );
+            playerForward = Vector3.Normalize( nextPos - prePos );
             player.UpdateMovingForward( playerForward );
+            agent.enabled = false;
         }
     }
 
@@ -119,6 +137,12 @@ public class PlayerController : MonoBehaviour
     {
         this.transform.position +=
             forceMovementPos;
+    }
+    
+    public void NavMeshMove( Vector3 targetPos )
+    {
+        agent.enabled = true;
+        agent.SetDestination( targetPos );
     }
 
 
@@ -202,19 +226,19 @@ public class PlayerController : MonoBehaviour
 
     public void CheckWall()
     {
-        if ( hits.Length > 0 )
-        {
-            ClimbableWall hitWall;
-            for ( int i = 0; i < hits.Length; i++ )
-            {
-                if ( hits[ i ].collider.TryGetComponent( out ClimbableWall wall ) )
-                {
-                    Debug.Log(hits[i].distance);
-
-                    return;
-                }
-            }
-        }
+        // if ( hits.Length > 0 )
+        // {
+        //     ClimbableWall hitWall;
+        //     for ( int i = 0; i < hits.Length; i++ )
+        //     {
+        //         if ( hits[ i ].collider.TryGetComponent( out ClimbableWall wall ) )
+        //         {
+        //             //Debug.Log(hits[i].distance);
+        //
+        //             return;
+        //         }
+        //     }
+        // }
         // Physics.SphereCast( interactionPoint.position, wallCheckDistance, playerForward, out wallHit, wallCheckDistance, wallLayerMask );
         // //Physics.Linecast( interactionPoint.position, interactionPoint.position + playerForward * wallCheckDistance, out wallHit, wallLayerMask );
         //
