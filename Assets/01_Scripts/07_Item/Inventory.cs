@@ -22,6 +22,8 @@ public class Inventory
         } );
 
         item.OnUse += OnItemUse;
+        item.OnThrow += OnItemThrow;
+        
         remainCount = item.Count;
 
         if ( findItems.Count > 0 )
@@ -60,6 +62,8 @@ public class Inventory
         if ( items.Contains( item ) )
         {
             item.OnUse -= OnItemUse;
+            item.OnThrow -= OnItemThrow;
+            
             items.Remove( item );
         }
     }
@@ -70,6 +74,14 @@ public class Inventory
         {
             if ( consumableItem.Count <= 0 )
                 RemoveItem( consumableItem );
+        }
+    }
+
+    void OnItemThrow(Item item)
+    {
+        if (item.Count <= 0)
+        {
+            RemoveItem( item );
         }
     }
 }

@@ -143,19 +143,23 @@ public class InventoryItemInfoUI : MonoBehaviour
     public void OnClickUnequipItem()
     {
         if ( nowItem == null ) return;
-        OnItemButtonAction?.Invoke();
         
         if ( nowItem is EquipItem equipItem )
         {
             equipItem.Equip( GameManager.Instance.Player );
         }
+        OnItemButtonAction?.Invoke();
     }
 
     public void OnClickThrowItem()
     {
-        // 버리는거 못했당
-        
         if ( nowItem == null ) return;
+        
+        
+        Vector3 spawnPos = GameManager.Instance.Player.transform.position + (GameManager.Instance.Player.Controller.PlayerForward * 1.0f) + Vector3.up * 1.0f;
+        ItemManager.Instance.SpawnDropItem(nowItem.Name, spawnPos);
+        nowItem.Throw( GameManager.Instance.Player );
+
         OnItemButtonAction?.Invoke();
     }
 }

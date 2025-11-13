@@ -49,12 +49,12 @@ public class ItemManager : MonoBehaviour
         return null;
     }
 
-    public void SpawnDropItem(string itemName, Vector3 position)
+    public GameObject SpawnDropItem(string itemName, Vector3 position)
     {
         ItemData itemData = GetItemData(itemName);
-        if(itemData == null) return;
-        if(itemData.DropPrefab == null) return;
+        if(itemData == null) return null;
+        if(itemData.DropPrefab == null) return null;
         
-        Instantiate(itemData.DropPrefab, position, Quaternion.identity);
+        return Instantiate(itemData.DropPrefab, position, Quaternion.identity);
     }
 }

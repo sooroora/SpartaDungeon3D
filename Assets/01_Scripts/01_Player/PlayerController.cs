@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour
     /*
      *  이동 정보들
      */
+    public Vector3 PlayerForward => playerForward;
     private Vector2 moveInput;
     private Vector3 camForward;
     private Vector3 playerForward;

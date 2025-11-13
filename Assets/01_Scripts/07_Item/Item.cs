@@ -27,6 +27,7 @@ public class Item
     private int maxCount;
 
     public event Action< Item > OnUse;
+    public event Action<Item> OnThrow;
 
     public Item( ItemData itemData, int _count = 1 )
     {
@@ -55,12 +56,21 @@ public class Item
         {
             count -= 1;
             UseInternal( player );
+            OnUse?.Invoke( this );
         }
         
-        OnUse?.Invoke( this );
     }
 
     protected virtual void UseInternal( Player player )
     {
+    }
+
+    public void Throw(Player player)
+    {
+        if ( count > 0 )
+        {
+            count -= 1;
+            OnThrow?.Invoke(this);
+        }
     }
 }
