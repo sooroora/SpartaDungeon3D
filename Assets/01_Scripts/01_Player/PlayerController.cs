@@ -17,13 +17,15 @@ public class PlayerController : MonoBehaviour
     [ SerializeField ] private LayerMask wallLayerMask;
 
     [ Header( "Interaction Range" ) ]
-    [SerializeField] float interactForwardOffset = 2.0f;
-    [SerializeField] float interactheightOffset = 0.0f;
-    [SerializeField] float interactMaxDistance = 5.0f;
-    [SerializeField] float interactSphereSize = 1.0f;
+    [ SerializeField ] float interactForwardOffset = 2.0f;
+
+    [ SerializeField ] float interactheightOffset = 0.0f;
+    [ SerializeField ] float interactMaxDistance = 5.0f;
+    [ SerializeField ] float interactSphereSize = 1.0f;
 
     [ Header( "Wall Check Distance" ) ]
-    [SerializeField] float wallCheckDistance = 0.1f;
+    [ SerializeField ] float wallCheckDistance = 0.1f;
+
     /*
      *
      */
@@ -42,6 +44,7 @@ public class PlayerController : MonoBehaviour
 
     bool isDashing;
     bool isHangWall;
+    bool isJumping = false;
 
     private Vector3 forceMovementPos;
 
@@ -74,30 +77,27 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
         Move();
-        
-        
+
+
         if ( agent.enabled )
         {
-            if (  Vector3.Distance( this.transform.position, agent.destination ) < 0.05f )
+            if ( Vector3.Distance( this.transform.position, agent.destination ) < 0.05f )
             {
                 agent.enabled = false;
             }
         }
-        
-        
     }
 
     void Move()
     {
         //if(wallHit.collider != null) return;
-        
+
         float nowSpeed = movingStat.Speed;
 
         nowSpeed = nowSpeed * player.Condition.GetSpeedBuffValue();
-        
-        
+
+
         if ( isDashing &&
              player.Condition.Stamina.CurrentValue > 0.0f )
         {
@@ -105,31 +105,49 @@ public class PlayerController : MonoBehaviour
             nowSpeed = nowSpeed * movingStat.DashMultiplier;
         }
 
+        Vector3 prePos = transform.position;
+        Vector3 nextPos = prePos;
 
-        Vector3 prePos = rb.position;//transform.position;
-
-        Vector3 right = Vector3.Cross(Vector3.up, camForward).normalized;
-        Vector3 moveDir = (camForward * moveInput.y + right * moveInput.x).normalized;
-        
-        // float dot = Vector3.Dot(playerForward,moveDir);
-        // if ( wallHit.collider != null && dot > 0.85f )
-        // {
-        //     //Debug.Log(dot);
-        //     return;
-        // }
-        
-        // Vector3 nextPos = rb.position + moveDir * (nowSpeed * Time.deltaTime);
-        // rb.MovePosition(nextPos);
-        
-        transform.position += moveDir * (nowSpeed * Time.deltaTime);
-        Vector3 nextPos = transform.position;
-
-        // 움직일때만 바뀌게
-        if ( moveInput != Vector2.zero )
+        // 벽타기~ 박은 벽에 따라서 움직이게
+        if ( isHangWall )
         {
+            Vector3 wallDirForward = Vector3.Cross( wallHit.normal, Vector3.up ).normalized;
+            Vector3 dirUp = Vector3.Cross( wallDirForward, wallHit.normal ).normalized;
+
+            // moveInput.y를 위/아래(벽을 타고 올라가거나 내려감), moveInput.x를 좌우(벽을 따라)
+            Vector3 moveDir = ( dirUp * moveInput.y + wallDirForward * moveInput.x ).normalized;
+
+
+            transform.position += moveDir * ( nowSpeed * Time.deltaTime );
+            nextPos = transform.position;
+
+
+            // 카메라 y 만 (up 빼
+            Vector3 camForwardFlat = Vector3.ProjectOnPlane( camForward, Vector3.up ).normalized;
+            Vector3 camRight = Vector3.Cross( Vector3.up, camForwardFlat ).normalized;
+            Vector3 rotateDir = ( camForwardFlat * moveInput.y + camRight * moveInput.x );
+            if ( rotateDir != Vector3.zero )
+            {
+                playerForward = rotateDir.normalized;
+                player.UpdateMovingForward( playerForward );
+                agent.enabled = false;
+            }
+        }
+        else
+        {
+            Vector3 right = Vector3.Cross( Vector3.up, camForward ).normalized;
+            Vector3 moveDir = ( camForward * moveInput.y + right * moveInput.x ).normalized;
+
+            transform.position += moveDir * ( nowSpeed * Time.deltaTime );
+            nextPos = transform.position;
             playerForward = Vector3.Normalize( nextPos - prePos );
-            player.UpdateMovingForward( playerForward );
-            agent.enabled = false;
+
+            // 움직일때만 바뀌게
+            if ( moveInput != Vector2.zero )
+            {
+                player.UpdateMovingForward( playerForward );
+                agent.enabled = false;
+            }
         }
     }
 
@@ -138,7 +156,7 @@ public class PlayerController : MonoBehaviour
         this.transform.position +=
             forceMovementPos;
     }
-    
+
     public void NavMeshMove( Vector3 targetPos )
     {
         agent.enabled = true;
@@ -170,6 +188,7 @@ public class PlayerController : MonoBehaviour
         {
             if ( Physics.Raycast( rays[ i ], 0.1f, groundLayerMask ) )
             {
+                if ( isJumping ) isJumping = false;
                 return true;
             }
         }
@@ -226,6 +245,22 @@ public class PlayerController : MonoBehaviour
 
     public void CheckWall()
     {
+        Physics.Linecast( interactionPoint.position + ( playerForward * -0.5f ), interactionPoint.position + playerForward * wallCheckDistance, out wallHit, wallLayerMask );
+        if ( wallHit.collider != null )
+        {
+            rb.useGravity = false;
+            isHangWall = true;
+
+            if ( isJumping )
+                rb.velocity = Vector3.zero;
+        }
+        else
+        {
+            rb.useGravity = true;
+            isHangWall = false;
+        }
+
+
         // if ( hits.Length > 0 )
         // {
         //     ClimbableWall hitWall;
@@ -240,7 +275,7 @@ public class PlayerController : MonoBehaviour
         //     }
         // }
         // Physics.SphereCast( interactionPoint.position, wallCheckDistance, playerForward, out wallHit, wallCheckDistance, wallLayerMask );
-        // //Physics.Linecast( interactionPoint.position, interactionPoint.position + playerForward * wallCheckDistance, out wallHit, wallLayerMask );
+        // //
         //
         // if ( wallHit.collider != null )
         // {
@@ -252,7 +287,14 @@ public class PlayerController : MonoBehaviour
 
     public void ForceJump( float jumpForce )
     {
+        isJumping = true;
         rb.AddForce( Vector3.up * jumpForce, ForceMode.Impulse );
+    }
+
+    public void ForceJump( float jumpForce, Vector3 dir )
+    {
+        isJumping = true;
+        rb.AddForce( dir* jumpForce, ForceMode.Impulse );
     }
 
 
@@ -264,6 +306,7 @@ public class PlayerController : MonoBehaviour
         if ( IsGrounded() )
         {
             rb.AddForce( Vector3.up * movingStat.JumpForce, ForceMode.Impulse );
+            isJumping = true;
         }
     }
 
@@ -297,10 +340,10 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawLine(
             startPoint,
             startPoint + playerForward * interactMaxDistance );
-        
-        
+
+
         Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(interactionPoint.position, interactionPoint.position + playerForward * wallCheckDistance );
+        Gizmos.DrawLine( interactionPoint.position + ( playerForward * -0.5f ), interactionPoint.position + playerForward * wallCheckDistance );
     }
 #endif
 }

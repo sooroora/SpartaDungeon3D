@@ -108,7 +108,8 @@ MonoBehaviour:
   OnInteractionRangeExit:
     m_PersistentCalls:
       m_Calls: []
-  debuffType: 0
+  dotDamageType: 0
+  fire: {fileID: 4478437017115879851}
   burnDamage: 2
 --- !u!135 &9204301414437333395
 SphereCollider:
@@ -149,7 +150,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6664879391696435027
 Transform:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -6,27 +7,31 @@ using UnityEngine;
 
 public class CampFire : InteractableObject
 {
-    [Header("CampFire")]
-    [SerializeField] DotDamageType dotDamageType;
-    [SerializeField] private int burnDamage;
+    [ Header( "CampFire" ) ]
+    [ SerializeField ] DotDamageType dotDamageType;
 
-    void OnTriggerEnter(Collider other)
+    [ SerializeField ] private GameObject fire;
+
+    [ SerializeField ] private int burnDamage;
+
+    private void Awake()
     {
-        if (other.TryGetComponent(out IDotDamage debuffable))
+        interactionType = InteractionMarkType.Interaction;
+        AddOnInteraction( ToggleFire );
+    }
+
+    void OnTriggerEnter( Collider other )
+    {
+        if ( fire.activeInHierarchy == false ) return;
+
+        if ( other.TryGetComponent( out IDotDamage debuffable ) )
         {
-            debuffable.ApplyDotDamage(dotDamageType, burnDamage, 5.0f, 1.0f);
+            debuffable.ApplyDotDamage( dotDamageType, burnDamage, 5.0f, 1.0f );
         }
     }
 
-    public override void InteractionRangeEnter()
+    void ToggleFire()
     {
-        base.InteractionRangeEnter();
+        fire.SetActive( !fire.activeInHierarchy );
     }
-
-    public override void InteractionRangeExit()
-    {
-        base.InteractionRangeExit();
-    }
-
-
 }
