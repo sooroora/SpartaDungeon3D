@@ -8,17 +8,19 @@ public class CameraController : MonoBehaviour
 {
 
     [SerializeField] private Transform container;
-    [SerializeField] private Transform containerFirstPersonX;
-
+    [SerializeField] private Transform containerX;
+    [SerializeField] private Transform wallCheckCotainer;
+    [SerializeField] private Transform wallCheckCotainerX;
+    [SerializeField] private Transform wallCheckTransform;
     private Vector3 thirdPersonPosition = new Vector3(0, 3.0f, -6.5f);
     private Vector3 firstPersonPosition = new Vector3(-0.25f, 1.6f, 0.65f);
 
     public Transform ContainerX
     {
-        get => containerFirstPersonX;
-        private set => containerFirstPersonX = value;
+        get => containerX;
+        private set => containerX = value;
     }
-    public Transform ContainerY
+    public Transform Container
     {
         get => container;
         private set => container = value;
@@ -26,10 +28,10 @@ public class CameraController : MonoBehaviour
 
 
     [Header("Camera Option")]
+    [SerializeField] LayerMask obstacleLayer;
+
     [SerializeField] private float lookSensitivity = 0.2f;
 
-    [SerializeField] private float defaultCameraDistance = 5.0f;
-    [SerializeField] private float cameraCollisionOffset = 2.0f;
 
     private float camCurRotX;
     private float camCurRotY;
@@ -43,30 +45,59 @@ public class CameraController : MonoBehaviour
 
 
     private Transform target;
+    private Transform camTransform;
+
 
     public bool IsThirdPerson => isThirdPerson;
     bool isThirdPerson = false;
 
 
-    public void Awake()
-    {
-        
-    }
-
     public void Start()
     {
         SetCameraPerspective(true);
+        camTransform = CameraManager.Instance.Cam.gameObject.transform;
+
+
     }
 
     private void LateUpdate()
     {
         MoveCamera();
         RotateCamera();
+
+        CheckObstacle();
     }
 
     public void SetTarget(Transform _target)
     {
         target = _target;
+    }
+
+    public void CheckObstacle()
+    {
+        if (target == null) return;
+        float wallCheckDistance = isThirdPerson ? thirdPersonPosition.magnitude : (firstPersonPosition.magnitude * 1.2f);
+
+
+        RaycastHit[] hits = Physics.RaycastAll(target.position, Vector3.Normalize(wallCheckTransform.position - target.position), wallCheckDistance, obstacleLayer);
+
+        if (hits.Length > 0)
+        {
+            Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+
+            if (isThirdPerson)
+                container.localPosition = container.forward * hits[0].distance;
+            else
+            {
+                container.localPosition = -Container.forward * hits[0].distance;
+            }
+        }
+        else
+        {
+            container.transform.localPosition = Vector3.zero;
+        }
+
+
     }
 
     /// <summary>
@@ -76,19 +107,26 @@ public class CameraController : MonoBehaviour
     public bool ToggleCameraPerspective()
     {
         container.transform.localRotation = Quaternion.identity;
-        containerFirstPersonX.transform.localRotation = Quaternion.identity;
+        containerX.transform.localRotation = Quaternion.identity;
+
+        wallCheckCotainer.transform.localRotation = Quaternion.identity;
+        wallCheckCotainerX.transform.localRotation = Quaternion.identity;
         if (isThirdPerson)
         {
             isThirdPerson = false;
-            containerFirstPersonX.transform.localPosition = firstPersonPosition;
-            InGameUIManager.Instance.ToggleCrosshair( true );
+            containerX.transform.localPosition = firstPersonPosition;
+            wallCheckCotainerX.transform.localPosition = firstPersonPosition;
+            InGameUIManager.Instance.ToggleCrosshair(true);
+            GameManager.Instance.Player.Visual.ShowHead(false);
             return true;
         }
         else
         {
             isThirdPerson = true;
-            containerFirstPersonX.transform.localPosition = thirdPersonPosition;
-            InGameUIManager.Instance.ToggleCrosshair( false );
+            containerX.transform.localPosition = thirdPersonPosition;
+            wallCheckCotainerX.transform.localPosition = thirdPersonPosition;
+            InGameUIManager.Instance.ToggleCrosshair(false);
+            GameManager.Instance.Player.Visual.ShowHead(true);
             return false;
         }
     }
@@ -98,31 +136,17 @@ public class CameraController : MonoBehaviour
         isThirdPerson = _isThirdPerson;
         if (isThirdPerson)
         {
-            containerFirstPersonX.transform.localPosition = thirdPersonPosition;
-            InGameUIManager.Instance.ToggleCrosshair( false );
+            containerX.transform.localPosition = thirdPersonPosition;
+            wallCheckCotainerX.transform.localPosition = thirdPersonPosition;
+            InGameUIManager.Instance.ToggleCrosshair(false);
+            GameManager.Instance.Player.Visual.ShowHead(true);
         }
         else
         {
-            containerFirstPersonX.transform.localPosition = firstPersonPosition;
-            InGameUIManager.Instance.ToggleCrosshair( true );
-        }
-    }
-
-
-    private RaycastHit hit;
-
-    void CheckObstacle()
-    {
-        if (target == null)
-            return;
-
-
-        Ray ray = new Ray(this.transform.position,
-            Vector3.Normalize(target.transform.position - this.transform.forward));
-
-        if (Physics.Raycast(ray, out hit))
-        {
-            
+            containerX.transform.localPosition = firstPersonPosition;
+            wallCheckCotainerX.transform.localPosition = firstPersonPosition;
+            InGameUIManager.Instance.ToggleCrosshair(true);
+            GameManager.Instance.Player.Visual.ShowHead(false);
         }
     }
 
@@ -154,11 +178,18 @@ public class CameraController : MonoBehaviour
     public void RotateCamera()
     {
         container.transform.localEulerAngles = new Vector3(0, camCurRotY, 0);
+        wallCheckCotainer.transform.localEulerAngles = new Vector3(0, camCurRotY, 0);
 
         if (isThirdPerson)
+        {
             container.localEulerAngles = new Vector3(-camCurRotX, container.localEulerAngles.y, 0);
+            wallCheckCotainerX.localEulerAngles = new Vector3(container.localEulerAngles.x, container.localEulerAngles.y, 0);
+        }
         else
-            containerFirstPersonX.transform.eulerAngles = new Vector3(-camCurRotX, containerFirstPersonX.transform.eulerAngles.y, containerFirstPersonX.transform.eulerAngles.z);
+        {
+            containerX.transform.eulerAngles = new Vector3(-camCurRotX, containerX.transform.eulerAngles.y, containerX.transform.eulerAngles.z);
+            wallCheckCotainerX.transform.eulerAngles = new Vector3(-camCurRotX, containerX.transform.eulerAngles.y, containerX.transform.eulerAngles.z);
+        }
         // containerY.localEulerAngles = new Vector3(-camCurRotX, containerY.localEulerAngles.y, 0);
         // 
     }
@@ -167,5 +198,24 @@ public class CameraController : MonoBehaviour
     {
         this.transform.position = target.transform.position;
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+
+
+        float wallCheckDistance = isThirdPerson ? thirdPersonPosition.magnitude : firstPersonPosition.magnitude;
+        //RaycastHit[] hits = Physics.RaycastAll(target.position, Vector3.Normalize(wallCheckTransform.position-target.position), wallCheckDistance, obstacleLayer);
+
+        //float wallCheckDistance = isThirdPerson? thirdPersonPosition.magnitude : firstPersonPosition.magnitude;
+
+        if (target != null)
+            Gizmos.DrawLine(target.position, target.position + (Vector3.Normalize(wallCheckTransform.position - target.position) * wallCheckDistance));
+
+
+    }
+
+#endif
 
 }

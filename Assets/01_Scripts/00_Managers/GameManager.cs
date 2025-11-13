@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         Init();
-
+        SoundManager.Instance.PlayBgm(EBgmName.InGame);
     }
 
     private void Init()

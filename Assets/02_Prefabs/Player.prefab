@@ -160,6 +160,7 @@ MonoBehaviour:
   interactMaxDistance: 2
   interactSphereSize: 0.9
   wallCheckDistance: 0.5
+  wallCheckBottomHeightOffset: 1.6
 --- !u!114 &9090513250551125222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,6 +201,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftHand: {fileID: 2740336512463400673}
   rightHand: {fileID: 8173252203298304202}
+  head: {fileID: 6474556996249148265}
 --- !u!195 &5644463588772436012
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -629,6 +631,11 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!4 &6474556996249148265 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2000449917088701351, guid: 996f862059bd0194c8fe931f79434634, type: 3}
+  m_PrefabInstance: {fileID: 4762901650807144654}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8173252203298304202 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -5515783359193845756, guid: 996f862059bd0194c8fe931f79434634, type: 3}

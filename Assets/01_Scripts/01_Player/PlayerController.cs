@@ -280,12 +280,16 @@ public class PlayerController : MonoBehaviour
     {
         isJumping = true;
         rb.AddForce( Vector3.up * jumpForce, ForceMode.Impulse );
+        
+        SoundManager.Instance.PlaySfxOnce(ESfxName.ForceJump);
     }
 
     public void ForceJump( float jumpForce, Vector3 dir )
     {
         isJumping = true;
         rb.AddForce( dir* jumpForce, ForceMode.Impulse );
+        
+        SoundManager.Instance.PlaySfxOnce(ESfxName.ForceJump);
     }
 
 
@@ -297,6 +301,7 @@ public class PlayerController : MonoBehaviour
         if ( IsGrounded() )
         {
             rb.AddForce( Vector3.up * movingStat.JumpForce, ForceMode.Impulse );
+            SoundManager.Instance.PlaySfxOnce(ESfxName.Jump);
             isJumping = true;
         }
     }

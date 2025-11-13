@@ -6,38 +6,39 @@ using UnityEngine;
 public class PlatformLauncher : MonoBehaviour
 {
     [SerializeField] private float readyDuration = 3.0f;
-    [ SerializeField ] private Transform direction;
-    [ SerializeField ] private float jumpPower = 20f;
-    
+    [SerializeField] private Transform direction;
+    [SerializeField] private float jumpPower = 20f;
+
     private bool isReady = false;
     private float nowDuration = 0.0f;
 
     private Player player;
-    
+
     private void Update()
     {
-        if ( isReady )
+        if (isReady)
         {
-            nowDuration+=Time.deltaTime;
+            nowDuration += Time.deltaTime;
+            InGameUIManager.Instance?.SetGauge(nowDuration/readyDuration);
 
-            if ( nowDuration >= readyDuration )
+            if (nowDuration >= readyDuration)
             {
                 isReady = false;
                 nowDuration = 0.0f;
-                Launch();
+                Launch(); 
             }
         }
-        }
+    }
 
     public void Launch()
     {
-        Debug.Log(direction.forward);
-        player?.Controller.ForceJump( jumpPower, Vector3.Normalize(direction.forward + Vector3.up) );
+        player?.Controller.ForceJump(jumpPower, Vector3.Normalize(direction.forward + Vector3.up));
+        InGameUIManager.Instance?.HideGauge();
     }
 
-    private void OnTriggerEnter( Collider other )
+    private void OnTriggerEnter(Collider other)
     {
-        if ( other.TryGetComponent( out Player _player ) )
+        if (other.TryGetComponent(out Player _player))
         {
             player = _player;
             isReady = true;
@@ -45,9 +46,9 @@ public class PlatformLauncher : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit( Collider other )
+    private void OnTriggerExit(Collider other)
     {
-        if ( other.TryGetComponent( out Player _player ) )
+        if (other.TryGetComponent(out Player _player))
         {
             isReady = false;
             nowDuration = 0.0f;

@@ -17,8 +17,8 @@ public class ItemSlotUI : MonoBehaviour
 
     private InventoryUI inventoryUI;
     private Button itemSlotButton;
-
-    private bool isSelected = false;
+    
+    //private bool isSelected = false;
 
     private void Awake()
     {
@@ -70,7 +70,7 @@ public class ItemSlotUI : MonoBehaviour
 
     public void OnSelect()
     {
-        isSelected = true;
+        //isSelected = true;
         slotImg.color = selectedColor;
 
         inventoryUI.SelectItemSlot( this );
@@ -78,7 +78,7 @@ public class ItemSlotUI : MonoBehaviour
 
     public void OnDeselect()
     {
-        isSelected = false;
+        //isSelected = false;
         slotImg.color = defaultColor;
     }
 

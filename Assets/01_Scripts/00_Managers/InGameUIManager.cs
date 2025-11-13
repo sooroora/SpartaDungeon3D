@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InGameUIManager : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class InGameUIManager : MonoBehaviour
     [ SerializeField ] GameObject        crosshair;
     [ SerializeField ] InteractionMark   interactionMark;
     [ SerializeField ] private GameObject controlManualUI;
+    [SerializeField] private Image imgGauge;
 
     private void Awake()
     {
@@ -66,5 +68,17 @@ public class InGameUIManager : MonoBehaviour
     public void ShowControlManualUI(bool _state)
     {
         controlManualUI.SetActive(_state);
+    }
+
+
+    public void SetGauge(float value)
+    {
+        imgGauge.gameObject.SetActive(true);
+        imgGauge.fillAmount = value;
+    }
+
+    public void HideGauge()
+    {
+        imgGauge.gameObject.SetActive(false);
     }
 }
