@@ -13,17 +13,15 @@ public class DayNightCycle : MonoBehaviour
 
     [Header("Sun")]
     public Light sun;
+
     public AnimationCurve sunIntensity;
     public Color dayAmbientColor;
 
     [Header("Moon")]
     public Light moon;
+
     public AnimationCurve moonIntensity;
     public Color nightAmbientColor;
-
-    // [Header("Other Lighting")]
-    // public AnimationCurve lightingIntensityMultiplier;
-    // public AnimationCurve reflectionIntensityMultiplier;
 
     private Material skyBox;
 
@@ -45,39 +43,31 @@ public class DayNightCycle : MonoBehaviour
         float skyBoxBlend = (time <= 0.5f) ? (time / 0.5f) : ((1f - time) / 0.5f);
         skyBox.SetFloat("_Blend", skyBoxBlend);
 
-        // 그림자 때문에 로테이션 하긴 해야함!!
-        sun.intensity = 1.0f - (skyBoxBlend);
-        
+        float angleX = 0;
+        float angleY = 0;
+
         if (time <= 0.5f)
         {
             RenderSettings.ambientLight = Color.Lerp(dayAmbientColor, nightAmbientColor, time / 0.5f);
+
+            float t = time / 0.5f;
+            sun.intensity = Mathf.Lerp(1.0f, 0.0f, t*1.2f);
+            
+            angleX = Mathf.Lerp(90f, -90f, t);
+            angleY = Mathf.Lerp(0, 180, t);
         }
-        else 
+        else
         {
             RenderSettings.ambientLight = Color.Lerp(nightAmbientColor, dayAmbientColor, (time - 0.5f) / 0.5f);
+
+            float t = (time - 0.5f) / 0.5f;
+            
+            sun.intensity = Mathf.Lerp(0f, 1.0f, t);
+            
+            angleX = Mathf.Lerp(-90f, 90f, t);
+            angleY = Mathf.Lerp(180f, 360f, t);
         }
-        
-        
-        // UpdateLighting(sun, sunColor, sunIntensity);
-        // UpdateLighting(moon, moonColor, moonIntensity);
-        //
-        // RenderSettings.ambientIntensity = lightingIntensityMultiplier.Evaluate(time);
-        // RenderSettings.reflectionIntensity = reflectionIntensityMultiplier.Evaluate(time);
 
-    }
-
-    void UpdateLighting(Light lightSource, Gradient colorGradiant, AnimationCurve intensityCurve)
-    {
-        float intensity = intensityCurve.Evaluate(time);
-
-        // lightSource.transform.eulerAngles = (time - (lightSource == sun ? 0.25f : 0.75f)) * noon * 4.0f;
-        lightSource.color = colorGradiant.Evaluate(time);
-        lightSource.intensity = intensity;
-
-        GameObject go = lightSource.gameObject;
-        if (lightSource.intensity == 0 && go.activeInHierarchy)
-            go.SetActive(false);
-        else if (lightSource.intensity > 0 && !go.activeInHierarchy)
-            go.SetActive(true);
+        sun.transform.rotation = Quaternion.Euler(angleX, angleY, 0f);
     }
 }

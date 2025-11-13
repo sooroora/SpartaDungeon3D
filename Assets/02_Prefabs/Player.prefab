@@ -159,8 +159,8 @@ MonoBehaviour:
   interactheightOffset: -0.7
   interactMaxDistance: 2
   interactSphereSize: 0.9
-  wallCheckDistance: 0.5
-  wallCheckBottomHeightOffset: 1.6
+  wallCheckDistance: 0.4
+  wallCheckBottomHeightOffset: -1.6
 --- !u!114 &9090513250551125222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,7 +249,7 @@ Transform:
   m_GameObject: {fileID: 6859176368167513204}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.24442995, y: 1.59, z: 0.65}
+  m_LocalPosition: {x: 0, y: 1.59, z: 0.65}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

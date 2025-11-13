@@ -52,6 +52,7 @@ public class PlatformLauncher : MonoBehaviour
         {
             isReady = false;
             nowDuration = 0.0f;
+            InGameUIManager.Instance?.HideGauge();
         }
     }
 }
