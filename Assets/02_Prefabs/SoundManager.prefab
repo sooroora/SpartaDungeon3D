@@ -48,6 +48,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e0060baa63004a24bb6818431b27818a, type: 2}
   - {fileID: 11400000, guid: 54bcd53ef8fb4f7459fb7c358bc8e4c4, type: 2}
   - {fileID: 11400000, guid: 72a356815b9ea8c43879d28f1b15479c, type: 2}
+  - {fileID: 11400000, guid: 16a729c01b1dcd146a83bd388eecede1, type: 2}
   bgmGroupAsset:
   - {fileID: 11400000, guid: 5151d54ca0278494dbaa38d3c0b22820, type: 2}
   - {fileID: 11400000, guid: f6fe4de999c51d946909af796de40227, type: 2}

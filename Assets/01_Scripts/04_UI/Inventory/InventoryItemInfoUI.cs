@@ -153,6 +153,8 @@ public class InventoryItemInfoUI : MonoBehaviour
 
     public void OnClickThrowItem()
     {
+        // 버리는거 못했당
+        
         if ( nowItem == null ) return;
         OnItemButtonAction?.Invoke();
     }

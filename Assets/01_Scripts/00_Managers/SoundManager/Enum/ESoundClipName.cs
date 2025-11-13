@@ -3,6 +3,7 @@ public enum ESfxName
     Click,
     Jump,
     ForceJump,
+    PickUp,
     Item,
     Coin,
     Crash,
