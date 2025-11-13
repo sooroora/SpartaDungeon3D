@@ -7,6 +7,13 @@
 
 <img width="766" height="427" alt="image" src="https://github.com/user-attachments/assets/2bf55fa6-9544-42d9-bf33-55d62cc991ce" />
 
+## ⏲️ 개발기간
+- 2025.11.06(목) ~ 2025.11.13(목)
+---
+## ⚙️ 개발 환경
+- **게임엔진:** Unity 2022.3.62f2
+- **언어:** C#  
+- **IDE:** Rider
 
 ---
 ## 💜 주요기능
@@ -26,20 +33,16 @@
 
 + NavMesh 를 이용한 자동 이동
 
+
+---
+## 🎮 조작방법
+
+<img width="773" height="430" alt="image" src="https://github.com/user-attachments/assets/6ee7b9d2-c138-4712-95d4-685c5728cc4d" />
+
 ---
 ## 📷 스크린샷
 <img width="400"  alt="image" src="https://github.com/user-attachments/assets/c274667c-b528-4ff4-b33c-50af823f9af3" />
 <img width="400"  alt="image" src="https://github.com/user-attachments/assets/36f0e29c-0b60-44eb-8d1d-d8932cce3477" />
 <img width="400"  alt="image" src="https://github.com/user-attachments/assets/dd6f8e7e-7264-43be-a7ba-c45c3ec6e1fa" />
 <img width="400" " alt="image" src="https://github.com/user-attachments/assets/87d7e7c8-29c8-4af9-a66a-f48cc439272b" />
-
-
-
-## ⏲️ 개발기간
-- 2025.11.06(목) ~ 2025.11.13(목)
----
-## ⚙️ 개발 환경
-- **게임엔진:** Unity 2022.3.62f2
-- **언어:** C#  
-- **IDE:** Rider
 
