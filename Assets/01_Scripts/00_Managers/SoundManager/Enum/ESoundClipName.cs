@@ -6,7 +6,7 @@ public enum ESfxName
     PickUp,
     Item,
     Coin,
-    Crash,
+    Damaged,
     GameOver,
 }
 public enum EBgmName

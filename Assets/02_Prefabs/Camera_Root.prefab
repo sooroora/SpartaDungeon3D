@@ -393,14 +393,12 @@ MonoBehaviour:
   container: {fileID: 3701378455195180320}
   containerX: {fileID: 8113680964467166903}
   wallCheckCotainer: {fileID: 7172126112093997421}
-  wallCheckCotainerX: {fileID: 7181897298796160371}
+  wallCheckContainerX: {fileID: 7181897298796160371}
   wallCheckTransform: {fileID: 2747083680752497260}
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 823
   lookSensitivity: 0.5
-  defaultCameraDistance: 5
-  cameraCollisionOffset: 2
   minXLookFirstPerson: -85
   maxXLookFirstPerson: 85
   minXLookThirdPerson: -50
