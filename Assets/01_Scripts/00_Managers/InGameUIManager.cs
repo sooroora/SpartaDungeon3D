@@ -14,6 +14,7 @@ public class InGameUIManager : MonoBehaviour
     [ SerializeField ] InventoryUI       inventoryUI;
     [ SerializeField ] GameObject        crosshair;
     [ SerializeField ] InteractionMark   interactionMark;
+    [ SerializeField ] private GameObject controlManualUI;
 
     private void Awake()
     {
@@ -60,5 +61,10 @@ public class InGameUIManager : MonoBehaviour
     public void HideInteractionMark()
     {
         interactionMark?.Hide();
+    }
+
+    public void ShowControlManualUI(bool _state)
+    {
+        controlManualUI.SetActive(_state);
     }
 }

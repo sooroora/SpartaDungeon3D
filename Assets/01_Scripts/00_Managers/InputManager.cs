@@ -39,19 +39,6 @@ public class InputManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    private void Update()
-    {
-        //test
-
-        if ( Input.GetKeyDown( KeyCode.F1 ) )
-        {
-            OpenUI();
-        }
-        else if ( Input.GetKeyDown( KeyCode.F2 ) )
-        {
-            CloseUI();
-        }
-    }
 
     void RegisterActions()
     {
@@ -80,6 +67,9 @@ public class InputManager : MonoBehaviour
         playerInput.actions[ "UseMouse" ].canceled += OnUseMouse;
         
         playerInput.actions["SelectTarget"].started += OnSelectTarget;
+        
+        playerInput.actions["Help"].started +=  OnHelp;
+        playerInput.actions["Help" ].canceled += OnHelp;
 
         // playerInputList에 담아두기
         // 많아지면 enum에 넣고 for문으로 바꾸기
@@ -130,8 +120,20 @@ public class InputManager : MonoBehaviour
         playerController.OnInteraction();
     }
 
-    private bool isUsingMouse = false;
+    public void OnHelp( InputAction.CallbackContext context )
+    {
+        if ( context.phase == InputActionPhase.Started )
+        {
+            InGameUIManager.Instance.ShowControlManualUI(true);
+        }
+        else if ( context.phase == InputActionPhase.Canceled )
+        {
+            InGameUIManager.Instance.ShowControlManualUI(false);
+        }
+    }
+    
 
+    private bool isUsingMouse = false;
     public void OnUseMouse( InputAction.CallbackContext context )
     {
         if ( context.phase == InputActionPhase.Started )

@@ -26,10 +26,8 @@ public class PlatformLauncher : MonoBehaviour
                 nowDuration = 0.0f;
                 Launch();
             }
-            
         }
-        
-    }
+        }
 
     public void Launch()
     {

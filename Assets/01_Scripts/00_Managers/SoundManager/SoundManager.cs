@@ -78,8 +78,8 @@ public class SoundManager : MonoBehaviour
 
     void ReadSoundClips()
     {
-        AudioClipGroup[] bgmClips = Resources.LoadAll<AudioClipGroup>("Sounds/BGM");
-        AudioClipGroup[] sfxClips = Resources.LoadAll<AudioClipGroup>("Sounds/SFX");
+        // AudioClipGroup[] bgmClips = Resources.LoadAll<AudioClipGroup>("Sounds/BGM");
+        // AudioClipGroup[] sfxClips = Resources.LoadAll<AudioClipGroup>("Sounds/SFX");
 
         SFXTable = ((ESfxName[])Enum.GetValues(typeof(ESfxName))).ToDictionary(part => part,
             part => (AudioClipGroup)null);
@@ -87,19 +87,19 @@ public class SoundManager : MonoBehaviour
         BGMTable = ((EBgmName[])Enum.GetValues(typeof(EBgmName))).ToDictionary(part => part,
             part => (AudioClipGroup)null);
 
-        for (int i = 0; i < bgmClips.Length; i++)
+        for (int i = 0; i < bgmGroupAsset.Length; i++)
         {
-            if (Enum.TryParse(bgmClips[i].name, out EBgmName bgmName))
+            if (Enum.TryParse(bgmGroupAsset[i].name, out EBgmName bgmName))
             {
-                BGMTable[bgmName] = bgmClips[i];
+                BGMTable[bgmName] = bgmGroupAsset[i];
             }
         }
 
-        for (int i = 0; i < sfxClips.Length; i++)
+        for (int i = 0; i < sfxGroupAsset.Length; i++)
         {
-            if (Enum.TryParse(sfxClips[i].name, ignoreCase: true, out ESfxName sfxName))
+            if (Enum.TryParse(sfxGroupAsset[i].name, ignoreCase: true, out ESfxName sfxName))
             {
-                SFXTable[sfxName] = sfxClips[i];
+                SFXTable[sfxName] = sfxGroupAsset[i];
             }
         }
 
