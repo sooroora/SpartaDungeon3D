@@ -15,6 +15,7 @@ public class DropItem : InteractableObject
         if ( objectData is ItemData item )
         {
             GameManager.Instance.Player.Inventory.AddItem( item.NewItem(), out int remainCount );
+            SoundManager.Instance?.PlaySfxOnce(ESfxName.PickUp);
 
             if ( remainCount > 0 )
             {
