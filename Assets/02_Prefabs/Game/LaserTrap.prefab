@@ -50,6 +50,7 @@ MonoBehaviour:
   laserStartPivot: {fileID: 1880769072212043380}
   laserEndPivot: {fileID: 2158356995191990624}
   laserScaler: {fileID: 8542149004195614208}
+  damage: 10
 --- !u!1 &1473714343718425868
 GameObject:
   m_ObjectHideFlags: 0
@@ -273,7 +274,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Laser
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3699749461607258974, guid: c1054c7e0a6cc214a82dd6696adeeda2, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

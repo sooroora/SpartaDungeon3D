@@ -234,8 +234,8 @@ Transform:
   m_GameObject: {fileID: 16771679}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -15.5, y: 3.69, z: -3.72}
-  m_LocalScale: {x: 11.9889345, y: 8.384287, z: 0.5685}
+  m_LocalPosition: {x: -15.5, y: 3.69, z: -1.35}
+  m_LocalScale: {x: 11.9889345, y: 8.384287, z: 5.824282}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -4266,6 +4266,14 @@ PrefabInstance:
       propertyPath: wallCheckDistance
       value: 0.35
       objectReference: {fileID: 0}
+    - target: {fileID: 4350483430006992499, guid: f576b39cdc0af8d48ad055165ca1c61c, type: 3}
+      propertyPath: wallCheckHeightOffset
+      value: -1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4350483430006992499, guid: f576b39cdc0af8d48ad055165ca1c61c, type: 3}
+      propertyPath: wallCheckBottomHeightOffset
+      value: -1.6
+      objectReference: {fileID: 0}
     - target: {fileID: 6812914249198253838, guid: f576b39cdc0af8d48ad055165ca1c61c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.8399998
@@ -4304,6 +4312,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6812914249198253838, guid: f576b39cdc0af8d48ad055165ca1c61c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7617598853556893679, guid: f576b39cdc0af8d48ad055165ca1c61c, type: 3}
+      propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
 
     [ Header( "Wall Check Distance" ) ]
     [ SerializeField ] float wallCheckDistance = 0.1f;
+    [ SerializeField ] float wallCheckBottomHeightOffset = 1.6f;
 
     /*
      *
@@ -55,7 +56,9 @@ public class PlayerController : MonoBehaviour
     RaycastHit[] hits;
     IInteractable nowFocusInteractable;
 
-    private RaycastHit wallHit;
+    private RaycastHit bottomWallHit;
+    private RaycastHit topWallHit;
+    private float wallRayHitDistance;
 
     private void Awake()
     {
@@ -111,8 +114,8 @@ public class PlayerController : MonoBehaviour
         // 벽타기~ 박은 벽에 따라서 움직이게
         if ( isHangWall )
         {
-            Vector3 wallDirForward = Vector3.Cross( wallHit.normal, Vector3.up ).normalized;
-            Vector3 dirUp = Vector3.Cross( wallDirForward, wallHit.normal ).normalized;
+            Vector3 wallDirForward = Vector3.Cross( bottomWallHit.normal, Vector3.up ).normalized;
+            Vector3 dirUp = Vector3.Cross( wallDirForward, bottomWallHit.normal ).normalized;
 
             // moveInput.y를 위/아래(벽을 타고 올라가거나 내려감), moveInput.x를 좌우(벽을 따라)
             Vector3 moveDir = ( dirUp * moveInput.y + wallDirForward * moveInput.x ).normalized;
@@ -140,11 +143,11 @@ public class PlayerController : MonoBehaviour
 
             transform.position += moveDir * ( nowSpeed * Time.deltaTime );
             nextPos = transform.position;
-            playerForward = Vector3.Normalize( nextPos - prePos );
 
             // 움직일때만 바뀌게
             if ( moveInput != Vector2.zero )
             {
+                playerForward = Vector3.Normalize( nextPos - prePos );
                 player.UpdateMovingForward( playerForward );
                 agent.enabled = false;
             }
@@ -245,8 +248,18 @@ public class PlayerController : MonoBehaviour
 
     public void CheckWall()
     {
-        Physics.Linecast( interactionPoint.position + ( playerForward * -0.5f ), interactionPoint.position + playerForward * wallCheckDistance, out wallHit, wallLayerMask );
-        if ( wallHit.collider != null )
+        Vector3 topStart = interactionPoint.position + (playerForward * -0.5f);
+        Vector3 topEnd = topStart + (playerForward * wallCheckDistance);
+        Vector3 bottomStart = topStart +(Vector3.up * wallCheckBottomHeightOffset );
+        Vector3 bottomEnd = bottomStart + (playerForward * wallCheckDistance);
+        
+        Physics.Linecast( topStart, topEnd, out topWallHit, wallLayerMask );
+        Physics.Linecast( bottomStart ,bottomEnd, out bottomWallHit, wallLayerMask );
+        //
+        // RaycastHit topBottomhit;
+        // Physics.Linecast(topEnd, bottomEnd, out topBottomhit, wallLayerMask );
+        
+        if ( bottomWallHit.collider != null || topWallHit.collider != null )
         {
             rb.useGravity = false;
             isHangWall = true;
@@ -259,29 +272,7 @@ public class PlayerController : MonoBehaviour
             rb.useGravity = true;
             isHangWall = false;
         }
-
-
-        // if ( hits.Length > 0 )
-        // {
-        //     ClimbableWall hitWall;
-        //     for ( int i = 0; i < hits.Length; i++ )
-        //     {
-        //         if ( hits[ i ].collider.TryGetComponent( out ClimbableWall wall ) )
-        //         {
-        //             //Debug.Log(hits[i].distance);
-        //
-        //             return;
-        //         }
-        //     }
-        // }
-        // Physics.SphereCast( interactionPoint.position, wallCheckDistance, playerForward, out wallHit, wallCheckDistance, wallLayerMask );
-        // //
-        //
-        // if ( wallHit.collider != null )
-        // {
-        //     Debug.Log( wallHit.distance );
-        //     
-        // }
+        
     }
 
 
@@ -343,7 +334,15 @@ public class PlayerController : MonoBehaviour
 
 
         Gizmos.color = Color.yellow;
-        Gizmos.DrawLine( interactionPoint.position + ( playerForward * -0.5f ), interactionPoint.position + playerForward * wallCheckDistance );
+        
+        
+        Vector3 topStart = interactionPoint.position + (playerForward * -0.5f);
+        Vector3 topEnd = topStart + (playerForward * wallCheckDistance);
+        Vector3 bottomStart = topStart +(Vector3.up * wallCheckBottomHeightOffset );
+        Vector3 bottomEnd = bottomStart + (playerForward * wallCheckDistance);
+        
+        Gizmos.DrawLine( topStart, topEnd);
+        Gizmos.DrawLine( bottomStart, bottomEnd);
     }
 #endif
 }
