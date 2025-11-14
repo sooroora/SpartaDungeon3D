@@ -458,6 +458,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Trampoline (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 7864234061064367231, guid: 16bdc7140620e544cbfa00bb9afd5276, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8573204260188854189, guid: 16bdc7140620e544cbfa00bb9afd5276, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2124,6 +2132,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Trampoline (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 7864234061064367231, guid: 16bdc7140620e544cbfa00bb9afd5276, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8573204260188854189, guid: 16bdc7140620e544cbfa00bb9afd5276, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2376,6 +2392,18 @@ PrefabInstance:
     - target: {fileID: 3275962921655676718, guid: 390f4178d2b69dc4e83d1053fdd93f30, type: 3}
       propertyPath: m_Name
       value: PlatformLauncher (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3275962921655676718, guid: 390f4178d2b69dc4e83d1053fdd93f30, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5751813003734867273, guid: 390f4178d2b69dc4e83d1053fdd93f30, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6109028734202117122, guid: 390f4178d2b69dc4e83d1053fdd93f30, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7866707249690772050, guid: 390f4178d2b69dc4e83d1053fdd93f30, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2640,6 +2668,14 @@ PrefabInstance:
     - target: {fileID: 7864234061064367231, guid: 16bdc7140620e544cbfa00bb9afd5276, type: 3}
       propertyPath: m_Name
       value: Trampoline (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7864234061064367231, guid: 16bdc7140620e544cbfa00bb9afd5276, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8573204260188854189, guid: 16bdc7140620e544cbfa00bb9afd5276, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3467,6 +3503,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlatformLauncher
       objectReference: {fileID: 0}
+    - target: {fileID: 3275962921655676718, guid: 390f4178d2b69dc4e83d1053fdd93f30, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5751813003734867273, guid: 390f4178d2b69dc4e83d1053fdd93f30, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6109028734202117122, guid: 390f4178d2b69dc4e83d1053fdd93f30, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 7866707249690772050, guid: 390f4178d2b69dc4e83d1053fdd93f30, type: 3}
       propertyPath: m_LocalPosition.x
       value: -25.14
@@ -3868,6 +3916,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2955014785526326662, guid: 5817baf66004f114d84366faa5bc4cb4, type: 3}
+      propertyPath: obstacleLayer.m_Bits
+      value: 567
+      objectReference: {fileID: 0}
     - target: {fileID: 7361199519760734319, guid: 5817baf66004f114d84366faa5bc4cb4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4025,6 +4077,14 @@ PrefabInstance:
     - target: {fileID: 7864234061064367231, guid: 16bdc7140620e544cbfa00bb9afd5276, type: 3}
       propertyPath: m_Name
       value: Trampoline
+      objectReference: {fileID: 0}
+    - target: {fileID: 7864234061064367231, guid: 16bdc7140620e544cbfa00bb9afd5276, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8573204260188854189, guid: 16bdc7140620e544cbfa00bb9afd5276, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
